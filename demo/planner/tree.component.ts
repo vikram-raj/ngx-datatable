@@ -17,7 +17,18 @@ import { Component } from '@angular/core';
 
         <ngx-datatable-column name="Title" width="1000">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <div style="width: 300px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
+            <button
+              [style.font-weight]="'bold'"
+              [style.margin-left.px]="row['level'] * 50"
+              (click)="addChild(row)"> + </button>
+            <button [style.font-weight]="'bold'"
+              (click)="removeChild(row)"> - </button>
+            <div style="
+              width: 300px;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+              display: inline;">
               {{row['title']}}
             </div>
           </ng-template>
@@ -29,26 +40,9 @@ import { Component } from '@angular/core';
           </ng-template>
         </ngx-datatable-column>
 
-        </ngx-datatable>
+      </ngx-datatable>
     </div>
   `,
-  styles: [`.arrow-down {
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-
-    border-top: 20px solid #f00;
-  }
-
-  .arrow-right {
-    width: 0;
-    height: 0;
-    border-top: 60px solid transparent;
-    border-bottom: 60px solid transparent;
-
-    border-left: 60px solid green;
-  }`]
 })
 export class PlannerTreeComponent {
 
@@ -56,16 +50,20 @@ export class PlannerTreeComponent {
   expanded = {};
   timeout: any;
   columns = [];
+  lastID = 1697;
 
   constructor() {
     this.fetch((data) => {
-      this.rows = data.data.map(d => {
-        return {
-          id: d.attributes['system.number'],
-          title: d.attributes['system.title'],
-          state: d.attributes['system.state']
-        };
-      });
+      this.rows = data.data
+        // .filter((d, i) => i < 15)
+        .map((d, i) => {
+          return {
+            id: d.attributes['system.number'],
+            title: d.attributes['system.title'],
+            state: d.attributes['system.state'],
+            level: 0
+          };
+        });
     });
   }
 
@@ -95,6 +93,33 @@ export class PlannerTreeComponent {
 
   getRowHeight(row) {
     return row.height;
+  }
+
+  addChild(row) {
+    console.log(row);
+    for (let k = 0; k < this.getRandomArbitrary(1, 5); k++) {
+      const index = this.rows.findIndex(r => r.id === row.id);
+      this.lastID += 1;
+      const newEl = {
+        id: this.lastID,
+        title: row.title,
+        state: row.state,
+        level: row.level + 1
+      };
+      this.rows.splice(index + 1, 0, newEl);
+    }
+  }
+
+  removeChild(row) {
+    console.log(row);
+    const index = this.rows.findIndex(r => r.id === row.id);
+    while(this.rows[index + 1].level > row.level) {
+      this.rows.splice(index + 1, 1);
+    }
+  }
+
+  getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
   }
 
 }
