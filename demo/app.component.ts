@@ -32,6 +32,12 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
             </ul>
           </li>
           <li>
+            <h4>Planner Demo</h4>
+            <ul>
+              <li><a href="#planner-tree-view" (click)="state='planner-tree-view'">Tree View</a></li>
+            </ul>
+          </li>
+          <li>
             <h4>Basic</h4>
             <ul>
               <li><a href="#virtual-scroll" (click)="state='virtual-scroll'">10k Rows</a></li>
@@ -52,7 +58,7 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
           <li>
             <h4>Rows</h4>
             <ul>
-              <li><a href="#row-grouping" (click)="state='row-grouping'">Row Grouping</a></li>            
+              <li><a href="#row-grouping" (click)="state='row-grouping'">Row Grouping</a></li>
               <li><a href="#" (click)="state=''">Fluid Row Height</a></li>
               <li><a href="#basic-fixed" (click)="state='basic-fixed'">Fixed Row Height</a></li>
               <li><a href="#dynamic" (click)="state='dynamic'">Dynamic Row Height</a></li>
@@ -110,6 +116,9 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
         </ul>
       </nav>
       <content>
+        <!-- Planner Demo -->
+        <planner-tree-view *ngIf="state === 'planner-tree-view'"></planner-tree-view>
+
         <!-- Basic -->
         <basic-auto-demo *ngIf="!state"></basic-auto-demo>
         <basic-fixed-demo *ngIf="state === 'basic-fixed'"></basic-fixed-demo>

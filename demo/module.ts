@@ -4,6 +4,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgxDatatableModule } from '../src';
 import { AppComponent } from './app.component';
 
+// -- Planner
+import { PlannerTreeComponent } from './planner/tree.component';
+
 // -- Basic
 import { BasicFixedComponent } from './basic/basic-fixed.component';
 import { BasicAutoComponent } from './basic/basic-auto.component';
@@ -92,6 +95,7 @@ import { ColumnPinningComponent } from './columns/pinning.component';
     SingleSelectionComponent,
     LiveDataComponent,
     MultiDisableSelectionComponent,
+    PlannerTreeComponent,
     RxDemoComponent,
     ContextMenuDemoComponent,
     CheckboxSelectionComponent,
