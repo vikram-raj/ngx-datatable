@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import 'rxjs/add/observable/fromEvent';
+import { DragulaModule } from 'ng2-dragula';
 
 import {
   DatatableComponent,
@@ -10,7 +11,7 @@ import {
   DataTableFooterComponent,
   DataTableHeaderCellComponent,
   DataTablePagerComponent,
-  DataTableBodyRowComponent,  
+  DataTableBodyRowComponent,
   DataTableRowWrapperComponent,
   ProgressBarComponent,
   DataTableBodyCellComponent,
@@ -38,7 +39,8 @@ import { ScrollbarHelper } from './services';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    DragulaModule
   ],
   providers: [
     ScrollbarHelper
@@ -58,7 +60,7 @@ import { ScrollbarHelper } from './services';
     DataTableBodyComponent,
     DataTableFooterComponent,
     DataTablePagerComponent,
-    ProgressBarComponent,    
+    ProgressBarComponent,
     DataTableBodyRowComponent,
     DataTableRowWrapperComponent,
     DatatableRowDetailDirective,
