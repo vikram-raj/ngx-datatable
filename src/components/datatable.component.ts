@@ -8,7 +8,8 @@ import {
 
 import {
   forceFillColumnWidths, adjustColumnWidths, sortRows,
-  setColumnDefaults, throttleable, translateTemplates
+  setColumnDefaults, throttleable, translateTemplates,
+  groupRowsByParents
 } from '../utils';
 import { ScrollbarHelper } from '../services';
 import { ColumnMode, SortType, SelectionType, TableColumn, ContextmenuType } from '../types';
@@ -79,7 +80,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
         (activate)="activate.emit($event)"
         (rowContextmenu)="onRowContextmenu($event)"
         (select)="onBodySelect($event)"
-        (scroll)="onBodyScroll($event)">
+        (scroll)="onBodyScroll($event)"
+        (treeAction)="onTreeAction($event)">
       </datatable-body>
       <datatable-footer
         *ngIf="footerHeight"
@@ -114,11 +116,14 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
   @Input() set rows(val: any) {
     this._rows = val;
     this._internalRows = [...val];
-    
+
     // auto sort on new updates
     if (!this.externalSorting) {
       this._internalRows = sortRows(this._internalRows, this._internalColumns, this.sorts);
     }
+
+    // auto group by parent on new update
+    this._internalRows = groupRowsByParents(this._internalRows);
 
     // recalculate sizes/etc
     this.recalculate();
@@ -462,6 +467,11 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
   @Output() tableContextmenu = new EventEmitter<{ event: MouseEvent, type: ContextmenuType, content: any }>(false);
 
   /**
+   * A row was expanded ot collapsed for tree
+   */
+  @Output() treeAction: EventEmitter<any> = new EventEmitter();
+
+  /**
    * CSS class applied if the header height if fixed height.
    */
   @HostBinding('class.fixed-header')
@@ -709,7 +719,7 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
 
   /**
    * Creates a map with the data grouped by the user choice of grouping index
-   * 
+   *
    * @param originalArray the original array passed via parameter
    * @param groupByIndex  the index of the column to group the data by
    */
@@ -746,6 +756,9 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
       } else {
         this._internalRows = [...this.rows];
       }
+
+      // auto group by parent on new update
+      this._internalRows = groupRowsByParents(this._internalRows);
 
       this.recalculatePages();
       this.cd.markForCheck();
@@ -1007,6 +1020,9 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
       this._internalRows = sortRows(this._internalRows, this._internalColumns, sorts);
     }
 
+    // auto group by parent on new update
+    this._internalRows = groupRowsByParents(this._internalRows);
+
     this.sorts = sorts;
     // Always go to first page when sorting to see the newly sorted data
     this.offset = 0;
@@ -1053,5 +1069,15 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
    */
   onBodySelect(event: any): void {
     this.select.emit(event);
+  }
+
+  /**
+   * A row was expanded ot collapsed for tree
+   */
+  onTreeAction(event: any) {
+    const row = event.row;
+    // TODO: For duplicated items this will not work
+    const rowIndex = this._rows.findIndex(r => r.id === event.row.id);
+    this.treeAction.emit({row, rowIndex});
   }
 }
