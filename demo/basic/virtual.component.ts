@@ -33,8 +33,14 @@ import { Component } from '@angular/core';
         </ngx-datatable-column>
         <ngx-datatable-column name="Row Height" prop="height" width="80">
         </ngx-datatable-column>
+        <ngx-datatable-column name="Event Button" width="80">
+          <ng-template ngx-datatable-cell-template>
+            <button (click)="toggleTestState()">Change State</button>
+          </ng-template>
+        </ngx-datatable-column>
       </ngx-datatable>
     </div>
+    <div *ngIf="testState">This is visible</div>
   `
 })
 export class VirtualScrollComponent {
@@ -42,6 +48,7 @@ export class VirtualScrollComponent {
   rows = [];
   expanded = {};
   timeout: any;
+  testState: boolean = true;
 
   constructor() {
     this.fetch((data) => {
@@ -75,6 +82,10 @@ export class VirtualScrollComponent {
 
   getRowHeight(row) {
     return row.height;
+  }
+
+  toggleTestState() {
+    this.testState = !this.testState;
   }
 
 }
