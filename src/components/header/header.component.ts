@@ -63,13 +63,13 @@ export class DataTableHeaderComponent {
   @Input() set innerWidth(val: number) {
     this._innerWidth = val;
 
-    if (this._columns) {    
+    if (this._columns) {
       const colByPin = columnsByPin(this._columns);
       this._columnGroupWidths = columnGroupWidths(colByPin, this._columns);
       this.setStylesByGroup();
     }
   }
-    
+
   get innerWidth(): number {
     return this._innerWidth;
   }
@@ -96,7 +96,7 @@ export class DataTableHeaderComponent {
   }
 
   @Input() set columns(val: any[]) {
-    this._columns = val;    
+    this._columns = val;
 
     const colsByPin = columnsByPin(val);
     this._columnsByPin = columnsByPinArr(val);
@@ -158,7 +158,7 @@ export class DataTableHeaderComponent {
     return '100%';
   }
 
-  trackByGroups(index: number, colGroup: any): any {    
+  trackByGroups(index: number, colGroup: any): any {
     return colGroup.type;
   }
 
@@ -245,11 +245,11 @@ export class DataTableHeaderComponent {
     };
 
     if (group === 'center') {
-      translateXY(styles, offsetX * -1, 0);
+      translateXY(styles, offsetX * -1, 0, 10);
     } else if (group === 'right') {
       const totalDiff = widths.total - this.innerWidth;
       const offset = totalDiff * -1;
-      translateXY(styles, offset, 0);
+      translateXY(styles, offset, 0, 10);
     }
 
     return styles;

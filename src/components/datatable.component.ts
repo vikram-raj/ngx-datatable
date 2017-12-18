@@ -27,7 +27,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
   template: `
     <div
       visibilityObserver
-      (visible)="recalculate()">
+      (visible)="recalculate()"
+      style="transform-style: preserve-3d;">
       <datatable-header
         *ngIf="headerHeight"
         [sorts]="sorts"
