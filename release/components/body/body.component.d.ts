@@ -24,6 +24,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     groupExpansionDefault: boolean;
     innerWidth: number;
     groupRowsBy: string;
+    virtualization: boolean;
     pageSize: number;
     rows: any[];
     columns: any[];
@@ -40,6 +41,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
         event: MouseEvent;
         row: any;
     }>;
+    treeAction: EventEmitter<any>;
     scroller: ScrollerComponent;
     /**
      * Returns if selection is enabled.
@@ -118,8 +120,8 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
      * manipulated.   As an example, if the height of row 0 is 30 px and row 1 is
      * 100 px then following styles are generated:
      *
-     * transform: translate3d(0px, 0px, 0px);    ->  row0
-     * transform: translate3d(0px, 30px, 0px);   ->  row1
+     * transform: translate3d(0px, 0px, 2px);    ->  row0
+     * transform: translate3d(0px, 30px, 1px);   ->  row1
      * transform: translate3d(0px, 130px, 0px);  ->  row2
      *
      * Row heights have to be calculated based on the row heights cache as we wont
@@ -183,4 +185,5 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
      * Gets the row index given a row
      */
     getRowIndex(row: any): number;
+    onTreeAction(row: any): void;
 }

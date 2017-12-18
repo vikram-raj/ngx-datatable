@@ -9,14 +9,15 @@ var hasCSSTransforms = typeof window !== 'undefined' ? !!prefixes_1.getVendorPre
 var hasCSS3DTransforms = typeof window !== 'undefined' ? !!prefixes_1.getVendorPrefixedName('perspective') : undefined;
 var ua = typeof window !== 'undefined' ? window.navigator.userAgent : 'Chrome';
 var isSafari = (/Safari\//).test(ua) && !(/Chrome\//).test(ua);
-function translateXY(styles, x, y) {
+function translateXY(styles, x, y, z) {
+    if (z === void 0) { z = 0; }
     if (typeof transform !== 'undefined' && hasCSSTransforms) {
         if (!isSafari && hasCSS3DTransforms) {
-            styles[transform] = "translate3d(" + x + "px, " + y + "px, 0)";
+            styles[transform] = "translate3d(" + x + "px, " + y + "px, " + z + "px)";
             styles[backfaceVisibility] = 'hidden';
         }
         else {
-            styles[camel_case_1.camelCase(transform)] = "translate(" + x + "px, " + y + "px)";
+            styles[camel_case_1.camelCase(transform)] = "translate(" + x + "px, " + y + "px, " + z + "px)";
         }
     }
     else {

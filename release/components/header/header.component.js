@@ -188,12 +188,12 @@ var DataTableHeaderComponent = /** @class */ (function () {
             width: widths[group] + "px"
         };
         if (group === 'center') {
-            utils_1.translateXY(styles, offsetX * -1, 0);
+            utils_1.translateXY(styles, offsetX * -1, 0, 10);
         }
         else if (group === 'right') {
             var totalDiff = widths.total - this.innerWidth;
             var offset = totalDiff * -1;
-            utils_1.translateXY(styles, offset, 0);
+            utils_1.translateXY(styles, offset, 0, 10);
         }
         return styles;
     };

@@ -12,7 +12,7 @@
 		exports["ngxDatatable"] = factory(require("@angular/common"), require("@angular/core"), require("@angular/platform-browser"));
 	else
 		root["ngxDatatable"] = factory(root["@angular/common"], root["@angular/core"], root["@angular/platform-browser"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE__angular_common__, __WEBPACK_EXTERNAL_MODULE__angular_core__, __WEBPACK_EXTERNAL_MODULE__angular_platform_browser__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE__angular_common__, __WEBPACK_EXTERNAL_MODULE__angular_core__, __WEBPACK_EXTERNAL_MODULE__angular_platform_browser__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -3145,6 +3145,103 @@ exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
 
 /***/ }),
 
+/***/ "./node_modules/rxjs/observable/merge.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__("./node_modules/rxjs/Observable.js");
+var ArrayObservable_1 = __webpack_require__("./node_modules/rxjs/observable/ArrayObservable.js");
+var isScheduler_1 = __webpack_require__("./node_modules/rxjs/util/isScheduler.js");
+var mergeAll_1 = __webpack_require__("./node_modules/rxjs/operators/mergeAll.js");
+/* tslint:enable:max-line-length */
+/**
+ * Creates an output Observable which concurrently emits all values from every
+ * given input Observable.
+ *
+ * <span class="informal">Flattens multiple Observables together by blending
+ * their values into one Observable.</span>
+ *
+ * <img src="./img/merge.png" width="100%">
+ *
+ * `merge` subscribes to each given input Observable (as arguments), and simply
+ * forwards (without doing any transformation) all the values from all the input
+ * Observables to the output Observable. The output Observable only completes
+ * once all input Observables have completed. Any error delivered by an input
+ * Observable will be immediately emitted on the output Observable.
+ *
+ * @example <caption>Merge together two Observables: 1s interval and clicks</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var timer = Rx.Observable.interval(1000);
+ * var clicksOrTimer = Rx.Observable.merge(clicks, timer);
+ * clicksOrTimer.subscribe(x => console.log(x));
+ *
+ * // Results in the following:
+ * // timer will emit ascending values, one every second(1000ms) to console
+ * // clicks logs MouseEvents to console everytime the "document" is clicked
+ * // Since the two streams are merged you see these happening
+ * // as they occur.
+ *
+ * @example <caption>Merge together 3 Observables, but only 2 run concurrently</caption>
+ * var timer1 = Rx.Observable.interval(1000).take(10);
+ * var timer2 = Rx.Observable.interval(2000).take(6);
+ * var timer3 = Rx.Observable.interval(500).take(10);
+ * var concurrent = 2; // the argument
+ * var merged = Rx.Observable.merge(timer1, timer2, timer3, concurrent);
+ * merged.subscribe(x => console.log(x));
+ *
+ * // Results in the following:
+ * // - First timer1 and timer2 will run concurrently
+ * // - timer1 will emit a value every 1000ms for 10 iterations
+ * // - timer2 will emit a value every 2000ms for 6 iterations
+ * // - after timer1 hits it's max iteration, timer2 will
+ * //   continue, and timer3 will start to run concurrently with timer2
+ * // - when timer2 hits it's max iteration it terminates, and
+ * //   timer3 will continue to emit a value every 500ms until it is complete
+ *
+ * @see {@link mergeAll}
+ * @see {@link mergeMap}
+ * @see {@link mergeMapTo}
+ * @see {@link mergeScan}
+ *
+ * @param {...ObservableInput} observables Input Observables to merge together.
+ * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
+ * Observables being subscribed to concurrently.
+ * @param {Scheduler} [scheduler=null] The IScheduler to use for managing
+ * concurrency of input Observables.
+ * @return {Observable} an Observable that emits items that are the result of
+ * every input Observable.
+ * @static true
+ * @name merge
+ * @owner Observable
+ */
+function merge() {
+    var observables = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        observables[_i - 0] = arguments[_i];
+    }
+    var concurrent = Number.POSITIVE_INFINITY;
+    var scheduler = null;
+    var last = observables[observables.length - 1];
+    if (isScheduler_1.isScheduler(last)) {
+        scheduler = observables.pop();
+        if (observables.length > 1 && typeof observables[observables.length - 1] === 'number') {
+            concurrent = observables.pop();
+        }
+    }
+    else if (typeof last === 'number') {
+        concurrent = observables.pop();
+    }
+    if (scheduler === null && observables.length === 1 && observables[0] instanceof Observable_1.Observable) {
+        return observables[0];
+    }
+    return mergeAll_1.mergeAll(concurrent)(new ArrayObservable_1.ArrayObservable(observables, scheduler));
+}
+exports.merge = merge;
+//# sourceMappingURL=merge.js.map
+
+/***/ }),
+
 /***/ "./node_modules/rxjs/observable/of.js":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3260,6 +3357,224 @@ exports.RaceSubscriber = RaceSubscriber;
 var TimerObservable_1 = __webpack_require__("./node_modules/rxjs/observable/TimerObservable.js");
 exports.timer = TimerObservable_1.TimerObservable.create;
 //# sourceMappingURL=timer.js.map
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/operators.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var audit_1 = __webpack_require__("./node_modules/rxjs/operators/audit.js");
+exports.audit = audit_1.audit;
+var auditTime_1 = __webpack_require__("./node_modules/rxjs/operators/auditTime.js");
+exports.auditTime = auditTime_1.auditTime;
+var buffer_1 = __webpack_require__("./node_modules/rxjs/operators/buffer.js");
+exports.buffer = buffer_1.buffer;
+var bufferCount_1 = __webpack_require__("./node_modules/rxjs/operators/bufferCount.js");
+exports.bufferCount = bufferCount_1.bufferCount;
+var bufferTime_1 = __webpack_require__("./node_modules/rxjs/operators/bufferTime.js");
+exports.bufferTime = bufferTime_1.bufferTime;
+var bufferToggle_1 = __webpack_require__("./node_modules/rxjs/operators/bufferToggle.js");
+exports.bufferToggle = bufferToggle_1.bufferToggle;
+var bufferWhen_1 = __webpack_require__("./node_modules/rxjs/operators/bufferWhen.js");
+exports.bufferWhen = bufferWhen_1.bufferWhen;
+var catchError_1 = __webpack_require__("./node_modules/rxjs/operators/catchError.js");
+exports.catchError = catchError_1.catchError;
+var combineAll_1 = __webpack_require__("./node_modules/rxjs/operators/combineAll.js");
+exports.combineAll = combineAll_1.combineAll;
+var combineLatest_1 = __webpack_require__("./node_modules/rxjs/operators/combineLatest.js");
+exports.combineLatest = combineLatest_1.combineLatest;
+var concat_1 = __webpack_require__("./node_modules/rxjs/operators/concat.js");
+exports.concat = concat_1.concat;
+var concatAll_1 = __webpack_require__("./node_modules/rxjs/operators/concatAll.js");
+exports.concatAll = concatAll_1.concatAll;
+var concatMap_1 = __webpack_require__("./node_modules/rxjs/operators/concatMap.js");
+exports.concatMap = concatMap_1.concatMap;
+var concatMapTo_1 = __webpack_require__("./node_modules/rxjs/operators/concatMapTo.js");
+exports.concatMapTo = concatMapTo_1.concatMapTo;
+var count_1 = __webpack_require__("./node_modules/rxjs/operators/count.js");
+exports.count = count_1.count;
+var debounce_1 = __webpack_require__("./node_modules/rxjs/operators/debounce.js");
+exports.debounce = debounce_1.debounce;
+var debounceTime_1 = __webpack_require__("./node_modules/rxjs/operators/debounceTime.js");
+exports.debounceTime = debounceTime_1.debounceTime;
+var defaultIfEmpty_1 = __webpack_require__("./node_modules/rxjs/operators/defaultIfEmpty.js");
+exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
+var delay_1 = __webpack_require__("./node_modules/rxjs/operators/delay.js");
+exports.delay = delay_1.delay;
+var delayWhen_1 = __webpack_require__("./node_modules/rxjs/operators/delayWhen.js");
+exports.delayWhen = delayWhen_1.delayWhen;
+var dematerialize_1 = __webpack_require__("./node_modules/rxjs/operators/dematerialize.js");
+exports.dematerialize = dematerialize_1.dematerialize;
+var distinct_1 = __webpack_require__("./node_modules/rxjs/operators/distinct.js");
+exports.distinct = distinct_1.distinct;
+var distinctUntilChanged_1 = __webpack_require__("./node_modules/rxjs/operators/distinctUntilChanged.js");
+exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
+var distinctUntilKeyChanged_1 = __webpack_require__("./node_modules/rxjs/operators/distinctUntilKeyChanged.js");
+exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
+var elementAt_1 = __webpack_require__("./node_modules/rxjs/operators/elementAt.js");
+exports.elementAt = elementAt_1.elementAt;
+var every_1 = __webpack_require__("./node_modules/rxjs/operators/every.js");
+exports.every = every_1.every;
+var exhaust_1 = __webpack_require__("./node_modules/rxjs/operators/exhaust.js");
+exports.exhaust = exhaust_1.exhaust;
+var exhaustMap_1 = __webpack_require__("./node_modules/rxjs/operators/exhaustMap.js");
+exports.exhaustMap = exhaustMap_1.exhaustMap;
+var expand_1 = __webpack_require__("./node_modules/rxjs/operators/expand.js");
+exports.expand = expand_1.expand;
+var filter_1 = __webpack_require__("./node_modules/rxjs/operators/filter.js");
+exports.filter = filter_1.filter;
+var finalize_1 = __webpack_require__("./node_modules/rxjs/operators/finalize.js");
+exports.finalize = finalize_1.finalize;
+var find_1 = __webpack_require__("./node_modules/rxjs/operators/find.js");
+exports.find = find_1.find;
+var findIndex_1 = __webpack_require__("./node_modules/rxjs/operators/findIndex.js");
+exports.findIndex = findIndex_1.findIndex;
+var first_1 = __webpack_require__("./node_modules/rxjs/operators/first.js");
+exports.first = first_1.first;
+var groupBy_1 = __webpack_require__("./node_modules/rxjs/operators/groupBy.js");
+exports.groupBy = groupBy_1.groupBy;
+var ignoreElements_1 = __webpack_require__("./node_modules/rxjs/operators/ignoreElements.js");
+exports.ignoreElements = ignoreElements_1.ignoreElements;
+var isEmpty_1 = __webpack_require__("./node_modules/rxjs/operators/isEmpty.js");
+exports.isEmpty = isEmpty_1.isEmpty;
+var last_1 = __webpack_require__("./node_modules/rxjs/operators/last.js");
+exports.last = last_1.last;
+var map_1 = __webpack_require__("./node_modules/rxjs/operators/map.js");
+exports.map = map_1.map;
+var mapTo_1 = __webpack_require__("./node_modules/rxjs/operators/mapTo.js");
+exports.mapTo = mapTo_1.mapTo;
+var materialize_1 = __webpack_require__("./node_modules/rxjs/operators/materialize.js");
+exports.materialize = materialize_1.materialize;
+var max_1 = __webpack_require__("./node_modules/rxjs/operators/max.js");
+exports.max = max_1.max;
+var merge_1 = __webpack_require__("./node_modules/rxjs/operators/merge.js");
+exports.merge = merge_1.merge;
+var mergeAll_1 = __webpack_require__("./node_modules/rxjs/operators/mergeAll.js");
+exports.mergeAll = mergeAll_1.mergeAll;
+var mergeMap_1 = __webpack_require__("./node_modules/rxjs/operators/mergeMap.js");
+exports.mergeMap = mergeMap_1.mergeMap;
+var mergeMap_2 = __webpack_require__("./node_modules/rxjs/operators/mergeMap.js");
+exports.flatMap = mergeMap_2.mergeMap;
+var mergeMapTo_1 = __webpack_require__("./node_modules/rxjs/operators/mergeMapTo.js");
+exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
+var mergeScan_1 = __webpack_require__("./node_modules/rxjs/operators/mergeScan.js");
+exports.mergeScan = mergeScan_1.mergeScan;
+var min_1 = __webpack_require__("./node_modules/rxjs/operators/min.js");
+exports.min = min_1.min;
+var multicast_1 = __webpack_require__("./node_modules/rxjs/operators/multicast.js");
+exports.multicast = multicast_1.multicast;
+var observeOn_1 = __webpack_require__("./node_modules/rxjs/operators/observeOn.js");
+exports.observeOn = observeOn_1.observeOn;
+var onErrorResumeNext_1 = __webpack_require__("./node_modules/rxjs/operators/onErrorResumeNext.js");
+exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
+var pairwise_1 = __webpack_require__("./node_modules/rxjs/operators/pairwise.js");
+exports.pairwise = pairwise_1.pairwise;
+var partition_1 = __webpack_require__("./node_modules/rxjs/operators/partition.js");
+exports.partition = partition_1.partition;
+var pluck_1 = __webpack_require__("./node_modules/rxjs/operators/pluck.js");
+exports.pluck = pluck_1.pluck;
+var publish_1 = __webpack_require__("./node_modules/rxjs/operators/publish.js");
+exports.publish = publish_1.publish;
+var publishBehavior_1 = __webpack_require__("./node_modules/rxjs/operators/publishBehavior.js");
+exports.publishBehavior = publishBehavior_1.publishBehavior;
+var publishLast_1 = __webpack_require__("./node_modules/rxjs/operators/publishLast.js");
+exports.publishLast = publishLast_1.publishLast;
+var publishReplay_1 = __webpack_require__("./node_modules/rxjs/operators/publishReplay.js");
+exports.publishReplay = publishReplay_1.publishReplay;
+var race_1 = __webpack_require__("./node_modules/rxjs/operators/race.js");
+exports.race = race_1.race;
+var reduce_1 = __webpack_require__("./node_modules/rxjs/operators/reduce.js");
+exports.reduce = reduce_1.reduce;
+var repeat_1 = __webpack_require__("./node_modules/rxjs/operators/repeat.js");
+exports.repeat = repeat_1.repeat;
+var repeatWhen_1 = __webpack_require__("./node_modules/rxjs/operators/repeatWhen.js");
+exports.repeatWhen = repeatWhen_1.repeatWhen;
+var retry_1 = __webpack_require__("./node_modules/rxjs/operators/retry.js");
+exports.retry = retry_1.retry;
+var retryWhen_1 = __webpack_require__("./node_modules/rxjs/operators/retryWhen.js");
+exports.retryWhen = retryWhen_1.retryWhen;
+var refCount_1 = __webpack_require__("./node_modules/rxjs/operators/refCount.js");
+exports.refCount = refCount_1.refCount;
+var sample_1 = __webpack_require__("./node_modules/rxjs/operators/sample.js");
+exports.sample = sample_1.sample;
+var sampleTime_1 = __webpack_require__("./node_modules/rxjs/operators/sampleTime.js");
+exports.sampleTime = sampleTime_1.sampleTime;
+var scan_1 = __webpack_require__("./node_modules/rxjs/operators/scan.js");
+exports.scan = scan_1.scan;
+var sequenceEqual_1 = __webpack_require__("./node_modules/rxjs/operators/sequenceEqual.js");
+exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
+var share_1 = __webpack_require__("./node_modules/rxjs/operators/share.js");
+exports.share = share_1.share;
+var shareReplay_1 = __webpack_require__("./node_modules/rxjs/operators/shareReplay.js");
+exports.shareReplay = shareReplay_1.shareReplay;
+var single_1 = __webpack_require__("./node_modules/rxjs/operators/single.js");
+exports.single = single_1.single;
+var skip_1 = __webpack_require__("./node_modules/rxjs/operators/skip.js");
+exports.skip = skip_1.skip;
+var skipLast_1 = __webpack_require__("./node_modules/rxjs/operators/skipLast.js");
+exports.skipLast = skipLast_1.skipLast;
+var skipUntil_1 = __webpack_require__("./node_modules/rxjs/operators/skipUntil.js");
+exports.skipUntil = skipUntil_1.skipUntil;
+var skipWhile_1 = __webpack_require__("./node_modules/rxjs/operators/skipWhile.js");
+exports.skipWhile = skipWhile_1.skipWhile;
+var startWith_1 = __webpack_require__("./node_modules/rxjs/operators/startWith.js");
+exports.startWith = startWith_1.startWith;
+/**
+ * TODO(https://github.com/ReactiveX/rxjs/issues/2900): Add back subscribeOn once it can be
+ * treeshaken. Currently if this export is added back, it
+ * forces apps to bring in asap scheduler along with
+ * Immediate, root, and other supporting code.
+ */
+// export { subscribeOn } from './operators/subscribeOn';
+var switchAll_1 = __webpack_require__("./node_modules/rxjs/operators/switchAll.js");
+exports.switchAll = switchAll_1.switchAll;
+var switchMap_1 = __webpack_require__("./node_modules/rxjs/operators/switchMap.js");
+exports.switchMap = switchMap_1.switchMap;
+var switchMapTo_1 = __webpack_require__("./node_modules/rxjs/operators/switchMapTo.js");
+exports.switchMapTo = switchMapTo_1.switchMapTo;
+var take_1 = __webpack_require__("./node_modules/rxjs/operators/take.js");
+exports.take = take_1.take;
+var takeLast_1 = __webpack_require__("./node_modules/rxjs/operators/takeLast.js");
+exports.takeLast = takeLast_1.takeLast;
+var takeUntil_1 = __webpack_require__("./node_modules/rxjs/operators/takeUntil.js");
+exports.takeUntil = takeUntil_1.takeUntil;
+var takeWhile_1 = __webpack_require__("./node_modules/rxjs/operators/takeWhile.js");
+exports.takeWhile = takeWhile_1.takeWhile;
+var tap_1 = __webpack_require__("./node_modules/rxjs/operators/tap.js");
+exports.tap = tap_1.tap;
+var throttle_1 = __webpack_require__("./node_modules/rxjs/operators/throttle.js");
+exports.throttle = throttle_1.throttle;
+var throttleTime_1 = __webpack_require__("./node_modules/rxjs/operators/throttleTime.js");
+exports.throttleTime = throttleTime_1.throttleTime;
+var timeInterval_1 = __webpack_require__("./node_modules/rxjs/operators/timeInterval.js");
+exports.timeInterval = timeInterval_1.timeInterval;
+var timeout_1 = __webpack_require__("./node_modules/rxjs/operators/timeout.js");
+exports.timeout = timeout_1.timeout;
+var timeoutWith_1 = __webpack_require__("./node_modules/rxjs/operators/timeoutWith.js");
+exports.timeoutWith = timeoutWith_1.timeoutWith;
+var timestamp_1 = __webpack_require__("./node_modules/rxjs/operators/timestamp.js");
+exports.timestamp = timestamp_1.timestamp;
+var toArray_1 = __webpack_require__("./node_modules/rxjs/operators/toArray.js");
+exports.toArray = toArray_1.toArray;
+var window_1 = __webpack_require__("./node_modules/rxjs/operators/window.js");
+exports.window = window_1.window;
+var windowCount_1 = __webpack_require__("./node_modules/rxjs/operators/windowCount.js");
+exports.windowCount = windowCount_1.windowCount;
+var windowTime_1 = __webpack_require__("./node_modules/rxjs/operators/windowTime.js");
+exports.windowTime = windowTime_1.windowTime;
+var windowToggle_1 = __webpack_require__("./node_modules/rxjs/operators/windowToggle.js");
+exports.windowToggle = windowToggle_1.windowToggle;
+var windowWhen_1 = __webpack_require__("./node_modules/rxjs/operators/windowWhen.js");
+exports.windowWhen = windowWhen_1.windowWhen;
+var withLatestFrom_1 = __webpack_require__("./node_modules/rxjs/operators/withLatestFrom.js");
+exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
+var zip_1 = __webpack_require__("./node_modules/rxjs/operators/zip.js");
+exports.zip = zip_1.zip;
+var zipAll_1 = __webpack_require__("./node_modules/rxjs/operators/zipAll.js");
+exports.zipAll = zipAll_1.zipAll;
+//# sourceMappingURL=operators.js.map
 
 /***/ }),
 
@@ -4482,6 +4797,8 @@ exports.CombineLatestSubscriber = CombineLatestSubscriber;
 "use strict";
 
 var concat_1 = __webpack_require__("./node_modules/rxjs/observable/concat.js");
+var concat_2 = __webpack_require__("./node_modules/rxjs/observable/concat.js");
+exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
 /**
  * Creates an output Observable which sequentially emits all values from every
@@ -7341,224 +7658,6 @@ var IgnoreElementsSubscriber = (function (_super) {
 
 /***/ }),
 
-/***/ "./node_modules/rxjs/operators/index.js":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var audit_1 = __webpack_require__("./node_modules/rxjs/operators/audit.js");
-exports.audit = audit_1.audit;
-var auditTime_1 = __webpack_require__("./node_modules/rxjs/operators/auditTime.js");
-exports.auditTime = auditTime_1.auditTime;
-var buffer_1 = __webpack_require__("./node_modules/rxjs/operators/buffer.js");
-exports.buffer = buffer_1.buffer;
-var bufferCount_1 = __webpack_require__("./node_modules/rxjs/operators/bufferCount.js");
-exports.bufferCount = bufferCount_1.bufferCount;
-var bufferTime_1 = __webpack_require__("./node_modules/rxjs/operators/bufferTime.js");
-exports.bufferTime = bufferTime_1.bufferTime;
-var bufferToggle_1 = __webpack_require__("./node_modules/rxjs/operators/bufferToggle.js");
-exports.bufferToggle = bufferToggle_1.bufferToggle;
-var bufferWhen_1 = __webpack_require__("./node_modules/rxjs/operators/bufferWhen.js");
-exports.bufferWhen = bufferWhen_1.bufferWhen;
-var catchError_1 = __webpack_require__("./node_modules/rxjs/operators/catchError.js");
-exports.catchError = catchError_1.catchError;
-var combineAll_1 = __webpack_require__("./node_modules/rxjs/operators/combineAll.js");
-exports.combineAll = combineAll_1.combineAll;
-var combineLatest_1 = __webpack_require__("./node_modules/rxjs/operators/combineLatest.js");
-exports.combineLatest = combineLatest_1.combineLatest;
-var concat_1 = __webpack_require__("./node_modules/rxjs/operators/concat.js");
-exports.concat = concat_1.concat;
-var concatAll_1 = __webpack_require__("./node_modules/rxjs/operators/concatAll.js");
-exports.concatAll = concatAll_1.concatAll;
-var concatMap_1 = __webpack_require__("./node_modules/rxjs/operators/concatMap.js");
-exports.concatMap = concatMap_1.concatMap;
-var concatMapTo_1 = __webpack_require__("./node_modules/rxjs/operators/concatMapTo.js");
-exports.concatMapTo = concatMapTo_1.concatMapTo;
-var count_1 = __webpack_require__("./node_modules/rxjs/operators/count.js");
-exports.count = count_1.count;
-var debounce_1 = __webpack_require__("./node_modules/rxjs/operators/debounce.js");
-exports.debounce = debounce_1.debounce;
-var debounceTime_1 = __webpack_require__("./node_modules/rxjs/operators/debounceTime.js");
-exports.debounceTime = debounceTime_1.debounceTime;
-var defaultIfEmpty_1 = __webpack_require__("./node_modules/rxjs/operators/defaultIfEmpty.js");
-exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
-var delay_1 = __webpack_require__("./node_modules/rxjs/operators/delay.js");
-exports.delay = delay_1.delay;
-var delayWhen_1 = __webpack_require__("./node_modules/rxjs/operators/delayWhen.js");
-exports.delayWhen = delayWhen_1.delayWhen;
-var dematerialize_1 = __webpack_require__("./node_modules/rxjs/operators/dematerialize.js");
-exports.dematerialize = dematerialize_1.dematerialize;
-var distinct_1 = __webpack_require__("./node_modules/rxjs/operators/distinct.js");
-exports.distinct = distinct_1.distinct;
-var distinctUntilChanged_1 = __webpack_require__("./node_modules/rxjs/operators/distinctUntilChanged.js");
-exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
-var distinctUntilKeyChanged_1 = __webpack_require__("./node_modules/rxjs/operators/distinctUntilKeyChanged.js");
-exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
-var elementAt_1 = __webpack_require__("./node_modules/rxjs/operators/elementAt.js");
-exports.elementAt = elementAt_1.elementAt;
-var every_1 = __webpack_require__("./node_modules/rxjs/operators/every.js");
-exports.every = every_1.every;
-var exhaust_1 = __webpack_require__("./node_modules/rxjs/operators/exhaust.js");
-exports.exhaust = exhaust_1.exhaust;
-var exhaustMap_1 = __webpack_require__("./node_modules/rxjs/operators/exhaustMap.js");
-exports.exhaustMap = exhaustMap_1.exhaustMap;
-var expand_1 = __webpack_require__("./node_modules/rxjs/operators/expand.js");
-exports.expand = expand_1.expand;
-var filter_1 = __webpack_require__("./node_modules/rxjs/operators/filter.js");
-exports.filter = filter_1.filter;
-var finalize_1 = __webpack_require__("./node_modules/rxjs/operators/finalize.js");
-exports.finalize = finalize_1.finalize;
-var find_1 = __webpack_require__("./node_modules/rxjs/operators/find.js");
-exports.find = find_1.find;
-var findIndex_1 = __webpack_require__("./node_modules/rxjs/operators/findIndex.js");
-exports.findIndex = findIndex_1.findIndex;
-var first_1 = __webpack_require__("./node_modules/rxjs/operators/first.js");
-exports.first = first_1.first;
-var groupBy_1 = __webpack_require__("./node_modules/rxjs/operators/groupBy.js");
-exports.groupBy = groupBy_1.groupBy;
-var ignoreElements_1 = __webpack_require__("./node_modules/rxjs/operators/ignoreElements.js");
-exports.ignoreElements = ignoreElements_1.ignoreElements;
-var isEmpty_1 = __webpack_require__("./node_modules/rxjs/operators/isEmpty.js");
-exports.isEmpty = isEmpty_1.isEmpty;
-var last_1 = __webpack_require__("./node_modules/rxjs/operators/last.js");
-exports.last = last_1.last;
-var map_1 = __webpack_require__("./node_modules/rxjs/operators/map.js");
-exports.map = map_1.map;
-var mapTo_1 = __webpack_require__("./node_modules/rxjs/operators/mapTo.js");
-exports.mapTo = mapTo_1.mapTo;
-var materialize_1 = __webpack_require__("./node_modules/rxjs/operators/materialize.js");
-exports.materialize = materialize_1.materialize;
-var max_1 = __webpack_require__("./node_modules/rxjs/operators/max.js");
-exports.max = max_1.max;
-var merge_1 = __webpack_require__("./node_modules/rxjs/operators/merge.js");
-exports.merge = merge_1.merge;
-var mergeAll_1 = __webpack_require__("./node_modules/rxjs/operators/mergeAll.js");
-exports.mergeAll = mergeAll_1.mergeAll;
-var mergeMap_1 = __webpack_require__("./node_modules/rxjs/operators/mergeMap.js");
-exports.mergeMap = mergeMap_1.mergeMap;
-var mergeMap_2 = __webpack_require__("./node_modules/rxjs/operators/mergeMap.js");
-exports.flatMap = mergeMap_2.mergeMap;
-var mergeMapTo_1 = __webpack_require__("./node_modules/rxjs/operators/mergeMapTo.js");
-exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
-var mergeScan_1 = __webpack_require__("./node_modules/rxjs/operators/mergeScan.js");
-exports.mergeScan = mergeScan_1.mergeScan;
-var min_1 = __webpack_require__("./node_modules/rxjs/operators/min.js");
-exports.min = min_1.min;
-var multicast_1 = __webpack_require__("./node_modules/rxjs/operators/multicast.js");
-exports.multicast = multicast_1.multicast;
-var observeOn_1 = __webpack_require__("./node_modules/rxjs/operators/observeOn.js");
-exports.observeOn = observeOn_1.observeOn;
-var onErrorResumeNext_1 = __webpack_require__("./node_modules/rxjs/operators/onErrorResumeNext.js");
-exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
-var pairwise_1 = __webpack_require__("./node_modules/rxjs/operators/pairwise.js");
-exports.pairwise = pairwise_1.pairwise;
-var partition_1 = __webpack_require__("./node_modules/rxjs/operators/partition.js");
-exports.partition = partition_1.partition;
-var pluck_1 = __webpack_require__("./node_modules/rxjs/operators/pluck.js");
-exports.pluck = pluck_1.pluck;
-var publish_1 = __webpack_require__("./node_modules/rxjs/operators/publish.js");
-exports.publish = publish_1.publish;
-var publishBehavior_1 = __webpack_require__("./node_modules/rxjs/operators/publishBehavior.js");
-exports.publishBehavior = publishBehavior_1.publishBehavior;
-var publishLast_1 = __webpack_require__("./node_modules/rxjs/operators/publishLast.js");
-exports.publishLast = publishLast_1.publishLast;
-var publishReplay_1 = __webpack_require__("./node_modules/rxjs/operators/publishReplay.js");
-exports.publishReplay = publishReplay_1.publishReplay;
-var race_1 = __webpack_require__("./node_modules/rxjs/operators/race.js");
-exports.race = race_1.race;
-var reduce_1 = __webpack_require__("./node_modules/rxjs/operators/reduce.js");
-exports.reduce = reduce_1.reduce;
-var repeat_1 = __webpack_require__("./node_modules/rxjs/operators/repeat.js");
-exports.repeat = repeat_1.repeat;
-var repeatWhen_1 = __webpack_require__("./node_modules/rxjs/operators/repeatWhen.js");
-exports.repeatWhen = repeatWhen_1.repeatWhen;
-var retry_1 = __webpack_require__("./node_modules/rxjs/operators/retry.js");
-exports.retry = retry_1.retry;
-var retryWhen_1 = __webpack_require__("./node_modules/rxjs/operators/retryWhen.js");
-exports.retryWhen = retryWhen_1.retryWhen;
-var refCount_1 = __webpack_require__("./node_modules/rxjs/operators/refCount.js");
-exports.refCount = refCount_1.refCount;
-var sample_1 = __webpack_require__("./node_modules/rxjs/operators/sample.js");
-exports.sample = sample_1.sample;
-var sampleTime_1 = __webpack_require__("./node_modules/rxjs/operators/sampleTime.js");
-exports.sampleTime = sampleTime_1.sampleTime;
-var scan_1 = __webpack_require__("./node_modules/rxjs/operators/scan.js");
-exports.scan = scan_1.scan;
-var sequenceEqual_1 = __webpack_require__("./node_modules/rxjs/operators/sequenceEqual.js");
-exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
-var share_1 = __webpack_require__("./node_modules/rxjs/operators/share.js");
-exports.share = share_1.share;
-var shareReplay_1 = __webpack_require__("./node_modules/rxjs/operators/shareReplay.js");
-exports.shareReplay = shareReplay_1.shareReplay;
-var single_1 = __webpack_require__("./node_modules/rxjs/operators/single.js");
-exports.single = single_1.single;
-var skip_1 = __webpack_require__("./node_modules/rxjs/operators/skip.js");
-exports.skip = skip_1.skip;
-var skipLast_1 = __webpack_require__("./node_modules/rxjs/operators/skipLast.js");
-exports.skipLast = skipLast_1.skipLast;
-var skipUntil_1 = __webpack_require__("./node_modules/rxjs/operators/skipUntil.js");
-exports.skipUntil = skipUntil_1.skipUntil;
-var skipWhile_1 = __webpack_require__("./node_modules/rxjs/operators/skipWhile.js");
-exports.skipWhile = skipWhile_1.skipWhile;
-var startWith_1 = __webpack_require__("./node_modules/rxjs/operators/startWith.js");
-exports.startWith = startWith_1.startWith;
-/**
- * TODO(https://github.com/ReactiveX/rxjs/issues/2900): Add back subscribeOn once it can be
- * treeshaken. Currently if this export is added back, it
- * forces apps to bring in asap scheduler along with
- * Immediate, root, and other supporting code.
- */
-// export { subscribeOn } from './subscribeOn';
-var switchAll_1 = __webpack_require__("./node_modules/rxjs/operators/switchAll.js");
-exports.switchAll = switchAll_1.switchAll;
-var switchMap_1 = __webpack_require__("./node_modules/rxjs/operators/switchMap.js");
-exports.switchMap = switchMap_1.switchMap;
-var switchMapTo_1 = __webpack_require__("./node_modules/rxjs/operators/switchMapTo.js");
-exports.switchMapTo = switchMapTo_1.switchMapTo;
-var take_1 = __webpack_require__("./node_modules/rxjs/operators/take.js");
-exports.take = take_1.take;
-var takeLast_1 = __webpack_require__("./node_modules/rxjs/operators/takeLast.js");
-exports.takeLast = takeLast_1.takeLast;
-var takeUntil_1 = __webpack_require__("./node_modules/rxjs/operators/takeUntil.js");
-exports.takeUntil = takeUntil_1.takeUntil;
-var takeWhile_1 = __webpack_require__("./node_modules/rxjs/operators/takeWhile.js");
-exports.takeWhile = takeWhile_1.takeWhile;
-var tap_1 = __webpack_require__("./node_modules/rxjs/operators/tap.js");
-exports.tap = tap_1.tap;
-var throttle_1 = __webpack_require__("./node_modules/rxjs/operators/throttle.js");
-exports.throttle = throttle_1.throttle;
-var throttleTime_1 = __webpack_require__("./node_modules/rxjs/operators/throttleTime.js");
-exports.throttleTime = throttleTime_1.throttleTime;
-var timeInterval_1 = __webpack_require__("./node_modules/rxjs/operators/timeInterval.js");
-exports.timeInterval = timeInterval_1.timeInterval;
-var timeout_1 = __webpack_require__("./node_modules/rxjs/operators/timeout.js");
-exports.timeout = timeout_1.timeout;
-var timeoutWith_1 = __webpack_require__("./node_modules/rxjs/operators/timeoutWith.js");
-exports.timeoutWith = timeoutWith_1.timeoutWith;
-var timestamp_1 = __webpack_require__("./node_modules/rxjs/operators/timestamp.js");
-exports.timestamp = timestamp_1.timestamp;
-var toArray_1 = __webpack_require__("./node_modules/rxjs/operators/toArray.js");
-exports.toArray = toArray_1.toArray;
-var window_1 = __webpack_require__("./node_modules/rxjs/operators/window.js");
-exports.window = window_1.window;
-var windowCount_1 = __webpack_require__("./node_modules/rxjs/operators/windowCount.js");
-exports.windowCount = windowCount_1.windowCount;
-var windowTime_1 = __webpack_require__("./node_modules/rxjs/operators/windowTime.js");
-exports.windowTime = windowTime_1.windowTime;
-var windowToggle_1 = __webpack_require__("./node_modules/rxjs/operators/windowToggle.js");
-exports.windowToggle = windowToggle_1.windowToggle;
-var windowWhen_1 = __webpack_require__("./node_modules/rxjs/operators/windowWhen.js");
-exports.windowWhen = windowWhen_1.windowWhen;
-var withLatestFrom_1 = __webpack_require__("./node_modules/rxjs/operators/withLatestFrom.js");
-exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
-var zip_1 = __webpack_require__("./node_modules/rxjs/operators/zip.js");
-exports.zip = zip_1.zip;
-var zipAll_1 = __webpack_require__("./node_modules/rxjs/operators/zipAll.js");
-exports.zipAll = zipAll_1.zipAll;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
 /***/ "./node_modules/rxjs/operators/isEmpty.js":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8053,19 +8152,9 @@ exports.max = max;
 
 "use strict";
 
-var Observable_1 = __webpack_require__("./node_modules/rxjs/Observable.js");
-var ArrayObservable_1 = __webpack_require__("./node_modules/rxjs/observable/ArrayObservable.js");
-var mergeAll_1 = __webpack_require__("./node_modules/rxjs/operators/mergeAll.js");
-var isScheduler_1 = __webpack_require__("./node_modules/rxjs/util/isScheduler.js");
-/* tslint:enable:max-line-length */
-function merge() {
-    var observables = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        observables[_i - 0] = arguments[_i];
-    }
-    return function (source) { return source.lift.call(mergeStatic.apply(void 0, [source].concat(observables))); };
-}
-exports.merge = merge;
+var merge_1 = __webpack_require__("./node_modules/rxjs/observable/merge.js");
+var merge_2 = __webpack_require__("./node_modules/rxjs/observable/merge.js");
+exports.mergeStatic = merge_2.merge;
 /* tslint:enable:max-line-length */
 /**
  * Creates an output Observable which concurrently emits all values from every
@@ -8076,80 +8165,51 @@ exports.merge = merge;
  *
  * <img src="./img/merge.png" width="100%">
  *
- * `merge` subscribes to each given input Observable (as arguments), and simply
- * forwards (without doing any transformation) all the values from all the input
- * Observables to the output Observable. The output Observable only completes
- * once all input Observables have completed. Any error delivered by an input
- * Observable will be immediately emitted on the output Observable.
+ * `merge` subscribes to each given input Observable (either the source or an
+ * Observable given as argument), and simply forwards (without doing any
+ * transformation) all the values from all the input Observables to the output
+ * Observable. The output Observable only completes once all input Observables
+ * have completed. Any error delivered by an input Observable will be immediately
+ * emitted on the output Observable.
  *
  * @example <caption>Merge together two Observables: 1s interval and clicks</caption>
  * var clicks = Rx.Observable.fromEvent(document, 'click');
  * var timer = Rx.Observable.interval(1000);
- * var clicksOrTimer = Rx.Observable.merge(clicks, timer);
+ * var clicksOrTimer = clicks.merge(timer);
  * clicksOrTimer.subscribe(x => console.log(x));
- *
- * // Results in the following:
- * // timer will emit ascending values, one every second(1000ms) to console
- * // clicks logs MouseEvents to console everytime the "document" is clicked
- * // Since the two streams are merged you see these happening
- * // as they occur.
  *
  * @example <caption>Merge together 3 Observables, but only 2 run concurrently</caption>
  * var timer1 = Rx.Observable.interval(1000).take(10);
  * var timer2 = Rx.Observable.interval(2000).take(6);
  * var timer3 = Rx.Observable.interval(500).take(10);
  * var concurrent = 2; // the argument
- * var merged = Rx.Observable.merge(timer1, timer2, timer3, concurrent);
+ * var merged = timer1.merge(timer2, timer3, concurrent);
  * merged.subscribe(x => console.log(x));
- *
- * // Results in the following:
- * // - First timer1 and timer2 will run concurrently
- * // - timer1 will emit a value every 1000ms for 10 iterations
- * // - timer2 will emit a value every 2000ms for 6 iterations
- * // - after timer1 hits it's max iteration, timer2 will
- * //   continue, and timer3 will start to run concurrently with timer2
- * // - when timer2 hits it's max iteration it terminates, and
- * //   timer3 will continue to emit a value every 500ms until it is complete
  *
  * @see {@link mergeAll}
  * @see {@link mergeMap}
  * @see {@link mergeMapTo}
  * @see {@link mergeScan}
  *
- * @param {...ObservableInput} observables Input Observables to merge together.
+ * @param {ObservableInput} other An input Observable to merge with the source
+ * Observable. More than one input Observables may be given as argument.
  * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
  * Observables being subscribed to concurrently.
  * @param {Scheduler} [scheduler=null] The IScheduler to use for managing
  * concurrency of input Observables.
- * @return {Observable} an Observable that emits items that are the result of
+ * @return {Observable} An Observable that emits items that are the result of
  * every input Observable.
- * @static true
- * @name merge
+ * @method merge
  * @owner Observable
  */
-function mergeStatic() {
+function merge() {
     var observables = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         observables[_i - 0] = arguments[_i];
     }
-    var concurrent = Number.POSITIVE_INFINITY;
-    var scheduler = null;
-    var last = observables[observables.length - 1];
-    if (isScheduler_1.isScheduler(last)) {
-        scheduler = observables.pop();
-        if (observables.length > 1 && typeof observables[observables.length - 1] === 'number') {
-            concurrent = observables.pop();
-        }
-    }
-    else if (typeof last === 'number') {
-        concurrent = observables.pop();
-    }
-    if (scheduler === null && observables.length === 1 && observables[0] instanceof Observable_1.Observable) {
-        return observables[0];
-    }
-    return mergeAll_1.mergeAll(concurrent)(new ArrayObservable_1.ArrayObservable(observables, scheduler));
+    return function (source) { return source.lift.call(merge_1.merge.apply(void 0, [source].concat(observables))); };
 }
-exports.mergeStatic = mergeStatic;
+exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
@@ -14931,6 +14991,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
     function DataTableBodyCellComponent(element, cd) {
         this.cd = cd;
         this.activate = new core_1.EventEmitter();
+        this.treeActionClick = new core_1.EventEmitter();
         this.isFocused = false;
         this.onCheckboxChangeFn = this.onCheckboxChange.bind(this);
         this.activateFn = this.activate.emit.bind(this.activate);
@@ -15043,6 +15104,26 @@ var DataTableBodyCellComponent = /** @class */ (function () {
         set: function (val) {
             this._sorts = val;
             this.calcSortDir = this.calcSortDir(val);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DataTableBodyCellComponent.prototype, "treeStatus", {
+        get: function () {
+            return this._treeStatus;
+        },
+        set: function (status) {
+            if (status !== 'collapsed' &&
+                status !== 'expanded' &&
+                status !== 'loading' &&
+                status !== 'disabled') {
+                this._treeStatus = 'collapsed';
+            }
+            else {
+                this._treeStatus = status;
+            }
+            this.checkValueUpdates();
+            this.cd.markForCheck();
         },
         enumerable: true,
         configurable: true
@@ -15215,6 +15296,11 @@ var DataTableBodyCellComponent = /** @class */ (function () {
             return html;
         return html.replace(/<\/?[^>]+(>|$)/g, '');
     };
+    DataTableBodyCellComponent.prototype.onTreeAction = function (row) {
+        if (this._treeStatus !== 'disabled') {
+            this.treeActionClick.emit();
+        }
+    };
     __decorate([
         core_1.Input(),
         __metadata("design:type", Object)
@@ -15260,9 +15346,18 @@ var DataTableBodyCellComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [Array])
     ], DataTableBodyCellComponent.prototype, "sorts", null);
     __decorate([
+        core_1.Input(),
+        __metadata("design:type", String),
+        __metadata("design:paramtypes", [String])
+    ], DataTableBodyCellComponent.prototype, "treeStatus", null);
+    __decorate([
         core_1.Output(),
         __metadata("design:type", core_1.EventEmitter)
     ], DataTableBodyCellComponent.prototype, "activate", void 0);
+    __decorate([
+        core_1.Output('treeAction'),
+        __metadata("design:type", core_1.EventEmitter)
+    ], DataTableBodyCellComponent.prototype, "treeActionClick", void 0);
     __decorate([
         core_1.ViewChild('cellTemplate', { read: core_1.ViewContainerRef }),
         __metadata("design:type", core_1.ViewContainerRef)
@@ -15316,7 +15411,11 @@ var DataTableBodyCellComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'datatable-body-cell',
             changeDetection: core_1.ChangeDetectionStrategy.OnPush,
-            template: "\n    <div class=\"datatable-body-cell-label\">\n      <label\n        *ngIf=\"column.checkboxable && (!displayCheck || displayCheck(row, column, value))\"\n        class=\"datatable-checkbox\">\n        <input\n          type=\"checkbox\"\n          [checked]=\"isSelected\"\n          (click)=\"onCheckboxChange($event)\"\n        />\n      </label>\n      <span\n        *ngIf=\"!column.cellTemplate\"\n        [title]=\"sanitizedValue\"\n        [innerHTML]=\"value\">\n      </span>\n      <ng-template #cellTemplate\n        *ngIf=\"column.cellTemplate\"\n        [ngTemplateOutlet]=\"column.cellTemplate\"\n        [ngTemplateOutletContext]=\"cellContext\">\n      </ng-template>\n    </div>\n  "
+            template: "\n    <div class=\"datatable-body-cell-label\"\n      [style.margin-left.px]=\"column.isTreeColumn ? row.level * 50 : 0\">\n      <label\n        *ngIf=\"column.checkboxable && (!displayCheck || displayCheck(row, column, value))\"\n        class=\"datatable-checkbox\">\n        <input\n          type=\"checkbox\"\n          [checked]=\"isSelected\"\n          (click)=\"onCheckboxChange($event)\"\n        />\n      </label>\n      <label class=\"clickable\"\n        *ngIf=\"column.isTreeColumn\"\n        (click)=\"onTreeAction()\">\n        <span *ngIf=\"_treeStatus==='loading' &&\n                !column.treeLoaderTemplate\">\n          [=]\n        </span>\n        <ng-template *ngIf=\"_treeStatus==='loading' &&\n                column.treeLoaderTemplate\"\n          [ngTemplateOutlet]=\"column.treeLoaderTemplate\">\n        </ng-template>\n\n        <span *ngIf=\"_treeStatus==='collapsed' &&\n                !column.treeExpanderTemplate\">\n          [+]\n        </span>\n        <ng-template *ngIf=\"_treeStatus==='collapsed' &&\n                column.treeExpanderTemplate\"\n          [ngTemplateOutlet]=\"column.treeExpanderTemplate\">\n        </ng-template>\n\n        <span *ngIf=\"_treeStatus==='expanded' &&\n                     !column.treeCollapserTemplate\">\n          [-]\n        </span>\n        <ng-template *ngIf=\"_treeStatus==='expanded' &&\n                            column.treeCollapserTemplate\"\n          [ngTemplateOutlet]=\"column.treeCollapserTemplate\">\n        </ng-template>\n\n        <span *ngIf=\"_treeStatus==='disabled' &&\n                     !column.treeDisableTemplate\" class=\"disabled\">\n          [-]\n        </span>\n        <ng-template *ngIf=\"_treeStatus==='disabled' &&\n                           column.treeDisableTemplate\"\n          [ngTemplateOutlet]=\"column.treeDisableTemplate\">\n        </ng-template>\n      </label>\n\n      <span\n        *ngIf=\"!column.cellTemplate\"\n        [title]=\"sanitizedValue\"\n        [innerHTML]=\"value\">\n      </span>\n      <ng-template #cellTemplate\n        *ngIf=\"column.cellTemplate\"\n        [ngTemplateOutlet]=\"column.cellTemplate\"\n        [ngTemplateOutletContext]=\"cellContext\">\n      </ng-template>\n    </div>\n  ",
+            styles: [
+                '.clickable {cursor: pointer; }',
+                '.disabled {color: #d1d1d1; }'
+            ]
         }),
         __metadata("design:paramtypes", [core_1.ElementRef, core_1.ChangeDetectorRef])
     ], DataTableBodyCellComponent);
@@ -15597,17 +15696,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("@angular/core");
 var utils_1 = __webpack_require__("./src/utils/index.ts");
 var services_1 = __webpack_require__("./src/services/index.ts");
 var events_1 = __webpack_require__("./src/events.ts");
 var DataTableBodyRowComponent = /** @class */ (function () {
-    function DataTableBodyRowComponent(differs, scrollbarHelper, cd, element) {
+    function DataTableBodyRowComponent(differs, scrollbarHelper, cd, element, zone) {
         this.differs = differs;
         this.scrollbarHelper = scrollbarHelper;
         this.cd = cd;
+        this.zone = zone;
         this.activate = new core_1.EventEmitter();
+        this.treeAction = new core_1.EventEmitter();
         this._groupStyles = {
             left: {},
             center: {},
@@ -15639,6 +15743,16 @@ var DataTableBodyRowComponent = /** @class */ (function () {
             this._innerWidth = val;
             this.recalculateColumns();
             this.buildStylesByGroup();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DataTableBodyRowComponent.prototype, "rowSetter", {
+        set: function (val) {
+            var _this = this;
+            this.zone.run(function () {
+                _this.row = val;
+            });
         },
         enumerable: true,
         configurable: true
@@ -15761,6 +15875,9 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         this._columnsByPin = utils_1.allColumnsByPinArr(this._columns);
         this._columnGroupWidths = utils_1.columnGroupWidths(colsByPin, this._columns);
     };
+    DataTableBodyRowComponent.prototype.onTreeAction = function () {
+        this.treeAction.emit();
+    };
     __decorate([
         core_1.Input(),
         __metadata("design:type", Array),
@@ -15780,9 +15897,10 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         __metadata("design:type", Object)
     ], DataTableBodyRowComponent.prototype, "rowClass", void 0);
     __decorate([
-        core_1.Input(),
-        __metadata("design:type", Object)
-    ], DataTableBodyRowComponent.prototype, "row", void 0);
+        core_1.Input('row'),
+        __metadata("design:type", Object),
+        __metadata("design:paramtypes", [Object])
+    ], DataTableBodyRowComponent.prototype, "rowSetter", null);
     __decorate([
         core_1.Input(),
         __metadata("design:type", Object)
@@ -15799,6 +15917,10 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         core_1.Input(),
         __metadata("design:type", Object)
     ], DataTableBodyRowComponent.prototype, "displayCheck", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", String)
+    ], DataTableBodyRowComponent.prototype, "treeStatus", void 0);
     __decorate([
         core_1.Input(),
         __metadata("design:type", Number),
@@ -15824,6 +15946,10 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         __metadata("design:type", core_1.EventEmitter)
     ], DataTableBodyRowComponent.prototype, "activate", void 0);
     __decorate([
+        core_1.Output(),
+        __metadata("design:type", core_1.EventEmitter)
+    ], DataTableBodyRowComponent.prototype, "treeAction", void 0);
+    __decorate([
         core_1.HostListener('keydown', ['$event']),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object]),
@@ -15839,12 +15965,14 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'datatable-body-row',
             changeDetection: core_1.ChangeDetectionStrategy.OnPush,
-            template: "\n    <div\n      *ngFor=\"let colGroup of _columnsByPin; let i = index; trackBy: trackByGroups\"\n      class=\"datatable-row-{{colGroup.type}} datatable-row-group\"\n      [ngStyle]=\"_groupStyles[colGroup.type]\">\n      <datatable-body-cell\n        *ngFor=\"let column of colGroup.columns; let ii = index; trackBy: columnTrackingFn\"\n        tabindex=\"-1\"\n        [row]=\"row\"\n        [group]=\"group\"\n        [expanded]=\"expanded\"\n        [isSelected]=\"isSelected\"\n        [rowIndex]=\"rowIndex\"\n        [column]=\"column\"\n        [rowHeight]=\"rowHeight\"\n        [displayCheck]=\"displayCheck\"\n        (activate)=\"onActivate($event, ii)\">\n      </datatable-body-cell>\n    </div>      \n  "
+            template: "\n    <div\n      *ngFor=\"let colGroup of _columnsByPin; let i = index; trackBy: trackByGroups\"\n      class=\"datatable-row-{{colGroup.type}} datatable-row-group\"\n      [ngStyle]=\"_groupStyles[colGroup.type]\">\n      <datatable-body-cell\n        *ngFor=\"let column of colGroup.columns; let ii = index; trackBy: columnTrackingFn\"\n        tabindex=\"-1\"\n        [row]=\"row\"\n        [group]=\"group\"\n        [expanded]=\"expanded\"\n        [isSelected]=\"isSelected\"\n        [rowIndex]=\"rowIndex\"\n        [column]=\"column\"\n        [rowHeight]=\"rowHeight\"\n        [displayCheck]=\"displayCheck\"\n        [treeStatus]=\"treeStatus\"\n        (activate)=\"onActivate($event, ii)\"\n        (treeAction)=\"onTreeAction()\">\n      </datatable-body-cell>\n    </div>\n  "
         }),
+        __param(1, core_1.SkipSelf()),
         __metadata("design:paramtypes", [core_1.KeyValueDiffers,
             services_1.ScrollbarHelper,
             core_1.ChangeDetectorRef,
-            core_1.ElementRef])
+            core_1.ElementRef,
+            core_1.NgZone])
     ], DataTableBodyRowComponent);
     return DataTableBodyRowComponent;
 }());
@@ -15886,6 +16014,7 @@ var DataTableBodyComponent = /** @class */ (function () {
         this.select = new core_1.EventEmitter();
         this.detailToggle = new core_1.EventEmitter();
         this.rowContextmenu = new core_1.EventEmitter(false);
+        this.treeAction = new core_1.EventEmitter();
         this.rowHeightsCache = new utils_1.RowHeightCache();
         this.temp = [];
         this.offsetY = 0;
@@ -16127,12 +16256,12 @@ var DataTableBodyComponent = /** @class */ (function () {
         var idx = 0;
         var temp = [];
         this.rowIndexes.clear();
-        // if grouprowsby has been specified treat row paging 
-        // parameters as group paging parameters ie if limit 10 has been 
-        // specified treat it as 10 groups rather than 10 rows    
+        // if grouprowsby has been specified treat row paging
+        // parameters as group paging parameters ie if limit 10 has been
+        // specified treat it as 10 groups rather than 10 rows
         if (this.groupedRows) {
             var maxRowsPerGroup = 3;
-            // if there is only one group set the maximum number of 
+            // if there is only one group set the maximum number of
             // rows per group the same as the total number of rows
             if (this.groupedRows.length === 1) {
                 maxRowsPerGroup = this.groupedRows[0].value.length;
@@ -16201,8 +16330,8 @@ var DataTableBodyComponent = /** @class */ (function () {
      * manipulated.   As an example, if the height of row 0 is 30 px and row 1 is
      * 100 px then following styles are generated:
      *
-     * transform: translate3d(0px, 0px, 0px);    ->  row0
-     * transform: translate3d(0px, 30px, 0px);   ->  row1
+     * transform: translate3d(0px, 0px, 2px);    ->  row0
+     * transform: translate3d(0px, 30px, 1px);   ->  row1
      * transform: translate3d(0px, 130px, 0px);  ->  row2
      *
      * Row heights have to be calculated based on the row heights cache as we wont
@@ -16235,7 +16364,9 @@ var DataTableBodyComponent = /** @class */ (function () {
             // The position of this row would be the sum of all row heights
             // until the previous row position.
             var pos = this.rowHeightsCache.query(idx - 1);
-            utils_1.translateXY(styles, 0, pos);
+            // Z position of translate3d
+            var zValue = this._rowCount - idx;
+            utils_1.translateXY(styles, 0, pos, zValue);
         }
         return styles;
     };
@@ -16253,12 +16384,20 @@ var DataTableBodyComponent = /** @class */ (function () {
         var first = 0;
         var last = 0;
         if (this.scrollbarV) {
-            // Calculation of the first and last indexes will be based on where the
-            // scrollY position would be at.  The last index would be the one
-            // that shows up inside the view port the last.
-            var height = parseInt(this.bodyHeight, 0);
-            first = this.rowHeightsCache.getRowIndex(this.offsetY);
-            last = this.rowHeightsCache.getRowIndex(height + this.offsetY) + 1;
+            if (this.virtualization) {
+                // Calculation of the first and last indexes will be based on where the
+                // scrollY position would be at.  The last index would be the one
+                // that shows up inside the view port the last.
+                var height = parseInt(this.bodyHeight, 0);
+                first = this.rowHeightsCache.getRowIndex(this.offsetY);
+                last = this.rowHeightsCache.getRowIndex(height + this.offsetY) + 1;
+            }
+            else {
+                // If virtual rows are not needed
+                // We render all in one go
+                first = 0;
+                last = this.rowCount - 1;
+            }
         }
         else {
             // The server is handling paging and will pass an array that begins with the
@@ -16410,6 +16549,9 @@ var DataTableBodyComponent = /** @class */ (function () {
     DataTableBodyComponent.prototype.getRowIndex = function (row) {
         return this.rowIndexes.get(row) || 0;
     };
+    DataTableBodyComponent.prototype.onTreeAction = function (row) {
+        this.treeAction.emit({ row: row });
+    };
     __decorate([
         core_1.Input(),
         __metadata("design:type", Boolean)
@@ -16492,6 +16634,10 @@ var DataTableBodyComponent = /** @class */ (function () {
     ], DataTableBodyComponent.prototype, "groupRowsBy", void 0);
     __decorate([
         core_1.Input(),
+        __metadata("design:type", Boolean)
+    ], DataTableBodyComponent.prototype, "virtualization", void 0);
+    __decorate([
+        core_1.Input(),
         __metadata("design:type", Number),
         __metadata("design:paramtypes", [Number])
     ], DataTableBodyComponent.prototype, "pageSize", null);
@@ -16551,13 +16697,17 @@ var DataTableBodyComponent = /** @class */ (function () {
         __metadata("design:type", Object)
     ], DataTableBodyComponent.prototype, "rowContextmenu", void 0);
     __decorate([
+        core_1.Output(),
+        __metadata("design:type", core_1.EventEmitter)
+    ], DataTableBodyComponent.prototype, "treeAction", void 0);
+    __decorate([
         core_1.ViewChild(scroller_component_1.ScrollerComponent),
         __metadata("design:type", scroller_component_1.ScrollerComponent)
     ], DataTableBodyComponent.prototype, "scroller", void 0);
     DataTableBodyComponent = __decorate([
         core_1.Component({
             selector: 'datatable-body',
-            template: "\n    <datatable-selection\n      #selector\n      [selected]=\"selected\"\n      [rows]=\"rows\"\n      [selectCheck]=\"selectCheck\"\n      [selectEnabled]=\"selectEnabled\"\n      [selectionType]=\"selectionType\"\n      [rowIdentity]=\"rowIdentity\"\n      (select)=\"select.emit($event)\"\n      (activate)=\"activate.emit($event)\">\n      <datatable-progress\n        *ngIf=\"loadingIndicator\">\n      </datatable-progress>\n      <datatable-scroller\n        *ngIf=\"rows?.length\"\n        [scrollbarV]=\"scrollbarV\"\n        [scrollbarH]=\"scrollbarH\"\n        [scrollHeight]=\"scrollHeight\"\n        [scrollWidth]=\"columnGroupWidths?.total\"\n        (scroll)=\"onBodyScroll($event)\">\n        <datatable-row-wrapper\n          [groupedRows]=\"groupedRows\"\n          *ngFor=\"let group of temp; let i = index; trackBy: rowTrackingFn;\"\n          [innerWidth]=\"innerWidth\"\n          [ngStyle]=\"getRowsStyles(group)\"\n          [rowDetail]=\"rowDetail\"\n          [groupHeader]=\"groupHeader\"\n          [offsetX]=\"offsetX\"\n          [detailRowHeight]=\"getDetailRowHeight(group[i],i)\"\n          [row]=\"group\"\n          [expanded]=\"getRowExpanded(group)\"\n          [rowIndex]=\"getRowIndex(group[i])\"\n          (rowContextmenu)=\"rowContextmenu.emit($event)\">\n          <datatable-body-row \n            *ngIf=\"!groupedRows; else groupedRowsTemplate\"        \n            tabindex=\"-1\"\n            [isSelected]=\"selector.getRowSelected(group)\"\n            [innerWidth]=\"innerWidth\"\n            [offsetX]=\"offsetX\"\n            [columns]=\"columns\"\n            [rowHeight]=\"getRowHeight(group)\"\n            [row]=\"group\"\n            [rowIndex]=\"getRowIndex(group)\"\n            [expanded]=\"getRowExpanded(group)\"            \n            [rowClass]=\"rowClass\"\n            [displayCheck]=\"displayCheck\"\n            (activate)=\"selector.onActivate($event, indexes.first + i)\">\n          </datatable-body-row>\n          <ng-template #groupedRowsTemplate>\n            <datatable-body-row\n              *ngFor=\"let row of group.value; let i = index; trackBy: rowTrackingFn;\"\n              tabindex=\"-1\"\n              [isSelected]=\"selector.getRowSelected(row)\"\n              [innerWidth]=\"innerWidth\"\n              [offsetX]=\"offsetX\"\n              [columns]=\"columns\"\n              [rowHeight]=\"getRowHeight(row)\"\n              [row]=\"row\"\n              [group]=\"group.value\"\n              [rowIndex]=\"getRowIndex(row)\"\n              [expanded]=\"getRowExpanded(row)\"\n              [rowClass]=\"rowClass\"\n              (activate)=\"selector.onActivate($event, i)\">\n            </datatable-body-row>\n          </ng-template>\n        </datatable-row-wrapper>\n      </datatable-scroller>\n      <div\n        class=\"empty-row\"\n        *ngIf=\"!rows?.length && !loadingIndicator\"\n        [innerHTML]=\"emptyMessage\">\n      </div>\n    </datatable-selection>\n  ",
+            template: "\n    <datatable-selection\n      #selector\n      [selected]=\"selected\"\n      [rows]=\"rows\"\n      [selectCheck]=\"selectCheck\"\n      [selectEnabled]=\"selectEnabled\"\n      [selectionType]=\"selectionType\"\n      [rowIdentity]=\"rowIdentity\"\n      (select)=\"select.emit($event)\"\n      (activate)=\"activate.emit($event)\">\n      <datatable-progress\n        *ngIf=\"loadingIndicator\">\n      </datatable-progress>\n      <datatable-scroller\n        *ngIf=\"rows?.length\"\n        [scrollbarV]=\"scrollbarV\"\n        [scrollbarH]=\"scrollbarH\"\n        [scrollHeight]=\"scrollHeight\"\n        [scrollWidth]=\"columnGroupWidths?.total\"\n        style=\"transform-style: preserve-3d\"\n        (scroll)=\"onBodyScroll($event)\">\n        <datatable-row-wrapper\n          [groupedRows]=\"groupedRows\"\n          *ngFor=\"let group of temp; let i = index; trackBy: rowTrackingFn;\"\n          [innerWidth]=\"innerWidth\"\n          [ngStyle]=\"getRowsStyles(group)\"\n          [rowDetail]=\"rowDetail\"\n          [groupHeader]=\"groupHeader\"\n          [offsetX]=\"offsetX\"\n          [detailRowHeight]=\"getDetailRowHeight(group[i],i)\"\n          [row]=\"group\"\n          [expanded]=\"getRowExpanded(group)\"\n          [rowIndex]=\"getRowIndex(group[i])\"\n          (rowContextmenu)=\"rowContextmenu.emit($event)\">\n          <datatable-body-row\n            *ngIf=\"!groupedRows; else groupedRowsTemplate\"\n            tabindex=\"-1\"\n            [isSelected]=\"selector.getRowSelected(group)\"\n            [innerWidth]=\"innerWidth\"\n            [offsetX]=\"offsetX\"\n            [columns]=\"columns\"\n            [rowHeight]=\"getRowHeight(group)\"\n            [row]=\"group\"\n            [rowIndex]=\"getRowIndex(group)\"\n            [expanded]=\"getRowExpanded(group)\"\n            [rowClass]=\"rowClass\"\n            [displayCheck]=\"displayCheck\"\n            [treeStatus]=\"group.treeStatus\"\n            (treeAction)=\"onTreeAction(group)\"\n            (activate)=\"selector.onActivate($event, indexes.first + i)\">\n          </datatable-body-row>\n          <ng-template #groupedRowsTemplate>\n            <datatable-body-row\n              *ngFor=\"let row of group.value; let i = index; trackBy: rowTrackingFn;\"\n              tabindex=\"-1\"\n              [isSelected]=\"selector.getRowSelected(row)\"\n              [innerWidth]=\"innerWidth\"\n              [offsetX]=\"offsetX\"\n              [columns]=\"columns\"\n              [rowHeight]=\"getRowHeight(row)\"\n              [row]=\"row\"\n              [group]=\"group.value\"\n              [rowIndex]=\"getRowIndex(row)\"\n              [expanded]=\"getRowExpanded(row)\"\n              [rowClass]=\"rowClass\"\n              (activate)=\"selector.onActivate($event, i)\">\n            </datatable-body-row>\n          </ng-template>\n        </datatable-row-wrapper>\n      </datatable-scroller>\n      <div\n        class=\"empty-row\"\n        *ngIf=\"!rows?.length && !loadingIndicator\"\n        [innerHTML]=\"emptyMessage\">\n      </div>\n    </datatable-selection>\n  ",
             changeDetection: core_1.ChangeDetectionStrategy.OnPush,
             host: {
                 class: 'datatable-body'
@@ -16641,8 +16791,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("@angular/core");
 var ScrollerComponent = /** @class */ (function () {
-    function ScrollerComponent(ngZone, element) {
+    function ScrollerComponent(ngZone, element, renderer) {
         this.ngZone = ngZone;
+        this.renderer = renderer;
         this.scrollbarV = false;
         this.scrollbarH = false;
         this.scroll = new core_1.EventEmitter();
@@ -16656,7 +16807,8 @@ var ScrollerComponent = /** @class */ (function () {
         var _this = this;
         // manual bind so we don't always listen
         if (this.scrollbarV || this.scrollbarH) {
-            this.parentElement = this.element.parentElement.parentElement;
+            var renderer = this.renderer;
+            this.parentElement = renderer.parentNode(renderer.parentNode(this.element));
             this.ngZone.runOutsideAngular(function () {
                 _this.parentElement.addEventListener('scroll', _this.onScrolled.bind(_this));
             });
@@ -16728,7 +16880,7 @@ var ScrollerComponent = /** @class */ (function () {
             },
             changeDetection: core_1.ChangeDetectionStrategy.OnPush
         }),
-        __metadata("design:paramtypes", [core_1.NgZone, core_1.ElementRef])
+        __metadata("design:paramtypes", [core_1.NgZone, core_1.ElementRef, core_1.Renderer2])
     ], ScrollerComponent);
     return ScrollerComponent;
 }());
@@ -17004,6 +17156,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("@angular/core");
 var column_header_directive_1 = __webpack_require__("./src/components/columns/column-header.directive.ts");
 var column_cell_directive_1 = __webpack_require__("./src/components/columns/column-cell.directive.ts");
+var tree_directive_1 = __webpack_require__("./src/components/columns/tree.directive.ts");
 var DataTableColumnDirective = /** @class */ (function () {
     function DataTableColumnDirective() {
     }
@@ -17081,6 +17234,10 @@ var DataTableColumnDirective = /** @class */ (function () {
     ], DataTableColumnDirective.prototype, "cellClass", void 0);
     __decorate([
         core_1.Input(),
+        __metadata("design:type", Boolean)
+    ], DataTableColumnDirective.prototype, "isTreeColumn", void 0);
+    __decorate([
+        core_1.Input(),
         core_1.ContentChild(column_cell_directive_1.DataTableColumnCellDirective, { read: core_1.TemplateRef }),
         __metadata("design:type", core_1.TemplateRef)
     ], DataTableColumnDirective.prototype, "cellTemplate", void 0);
@@ -17089,6 +17246,26 @@ var DataTableColumnDirective = /** @class */ (function () {
         core_1.ContentChild(column_header_directive_1.DataTableColumnHeaderDirective, { read: core_1.TemplateRef }),
         __metadata("design:type", core_1.TemplateRef)
     ], DataTableColumnDirective.prototype, "headerTemplate", void 0);
+    __decorate([
+        core_1.Input(),
+        core_1.ContentChild(tree_directive_1.DataTableColumnCellTreeExpander, { read: core_1.TemplateRef }),
+        __metadata("design:type", core_1.TemplateRef)
+    ], DataTableColumnDirective.prototype, "treeExpanderTemplate", void 0);
+    __decorate([
+        core_1.Input(),
+        core_1.ContentChild(tree_directive_1.DataTableColumnCellTreeCollapser, { read: core_1.TemplateRef }),
+        __metadata("design:type", core_1.TemplateRef)
+    ], DataTableColumnDirective.prototype, "treeCollapserTemplate", void 0);
+    __decorate([
+        core_1.Input(),
+        core_1.ContentChild(tree_directive_1.DataTableColumnCellTreeLoader, { read: core_1.TemplateRef }),
+        __metadata("design:type", core_1.TemplateRef)
+    ], DataTableColumnDirective.prototype, "treeLoaderTemplate", void 0);
+    __decorate([
+        core_1.Input(),
+        core_1.ContentChild(tree_directive_1.DataTableColumnCellTreeDisable, { read: core_1.TemplateRef }),
+        __metadata("design:type", core_1.TemplateRef)
+    ], DataTableColumnDirective.prototype, "treeDisableTemplate", void 0);
     DataTableColumnDirective = __decorate([
         core_1.Directive({ selector: 'ngx-datatable-column' })
     ], DataTableColumnDirective);
@@ -17111,6 +17288,71 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__("./src/components/columns/column.directive.ts"));
 __export(__webpack_require__("./src/components/columns/column-header.directive.ts"));
 __export(__webpack_require__("./src/components/columns/column-cell.directive.ts"));
+__export(__webpack_require__("./src/components/columns/tree.directive.ts"));
+
+
+/***/ }),
+
+/***/ "./src/components/columns/tree.directive.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("@angular/core");
+var DataTableColumnCellTreeExpander = /** @class */ (function () {
+    function DataTableColumnCellTreeExpander(template) {
+        this.template = template;
+    }
+    DataTableColumnCellTreeExpander = __decorate([
+        core_1.Directive({ selector: '[ngx-datatable-cell-tree-expander]' }),
+        __metadata("design:paramtypes", [core_1.TemplateRef])
+    ], DataTableColumnCellTreeExpander);
+    return DataTableColumnCellTreeExpander;
+}());
+exports.DataTableColumnCellTreeExpander = DataTableColumnCellTreeExpander;
+var DataTableColumnCellTreeCollapser = /** @class */ (function () {
+    function DataTableColumnCellTreeCollapser(template) {
+        this.template = template;
+    }
+    DataTableColumnCellTreeCollapser = __decorate([
+        core_1.Directive({ selector: '[ngx-datatable-cell-tree-collapser]' }),
+        __metadata("design:paramtypes", [core_1.TemplateRef])
+    ], DataTableColumnCellTreeCollapser);
+    return DataTableColumnCellTreeCollapser;
+}());
+exports.DataTableColumnCellTreeCollapser = DataTableColumnCellTreeCollapser;
+var DataTableColumnCellTreeLoader = /** @class */ (function () {
+    function DataTableColumnCellTreeLoader(template) {
+        this.template = template;
+    }
+    DataTableColumnCellTreeLoader = __decorate([
+        core_1.Directive({ selector: '[ngx-datatable-cell-tree-loader]' }),
+        __metadata("design:paramtypes", [core_1.TemplateRef])
+    ], DataTableColumnCellTreeLoader);
+    return DataTableColumnCellTreeLoader;
+}());
+exports.DataTableColumnCellTreeLoader = DataTableColumnCellTreeLoader;
+var DataTableColumnCellTreeDisable = /** @class */ (function () {
+    function DataTableColumnCellTreeDisable(template) {
+        this.template = template;
+    }
+    DataTableColumnCellTreeDisable = __decorate([
+        core_1.Directive({ selector: '[ngx-datatable-cell-tree-disabled]' }),
+        __metadata("design:paramtypes", [core_1.TemplateRef])
+    ], DataTableColumnCellTreeDisable);
+    return DataTableColumnCellTreeDisable;
+}());
+exports.DataTableColumnCellTreeDisable = DataTableColumnCellTreeDisable;
 
 
 /***/ }),
@@ -17152,6 +17394,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("@angular/core");
 var utils_1 = __webpack_require__("./src/utils/index.ts");
@@ -17165,8 +17410,9 @@ var footer_1 = __webpack_require__("./src/components/footer/index.ts");
 var header_1 = __webpack_require__("./src/components/header/index.ts");
 var BehaviorSubject_1 = __webpack_require__("./node_modules/rxjs/BehaviorSubject.js");
 var DatatableComponent = /** @class */ (function () {
-    function DatatableComponent(scrollbarHelper, cd, element, differs) {
+    function DatatableComponent(scrollbarHelper, dimensionsHelper, cd, element, differs) {
         this.scrollbarHelper = scrollbarHelper;
+        this.dimensionsHelper = dimensionsHelper;
         this.cd = cd;
         /**
          * List of row objects that should be
@@ -17280,6 +17526,10 @@ var DatatableComponent = /** @class */ (function () {
          */
         this.selectAllRowsOnPage = false;
         /**
+         * A flag for row virtualization on / off
+         */
+        this.virtualization = true;
+        /**
          * Body was scrolled typically in a `scrollbarV:true` scenario.
          */
         this.scroll = new core_1.EventEmitter();
@@ -17313,6 +17563,10 @@ var DatatableComponent = /** @class */ (function () {
          * content contains either the column or the row that was clicked.
          */
         this.tableContextmenu = new core_1.EventEmitter(false);
+        /**
+         * A row was expanded ot collapsed for tree
+         */
+        this.treeAction = new core_1.EventEmitter();
         this.rowCount = 0;
         this._offsetX = new BehaviorSubject_1.BehaviorSubject(0);
         this._count = 0;
@@ -17333,13 +17587,13 @@ var DatatableComponent = /** @class */ (function () {
          */
         set: function (val) {
             this._rows = val;
+            this._internalRows = val.slice();
             // auto sort on new updates
             if (!this.externalSorting) {
-                this._internalRows = utils_1.sortRows(val, this._internalColumns, this.sorts);
+                this._internalRows = utils_1.sortRows(this._internalRows, this._internalColumns, this.sorts);
             }
-            else {
-                this._internalRows = val.slice();
-            }
+            // auto group by parent on new update
+            this._internalRows = utils_1.groupRowsByParents(this._internalRows, this.treeFromRelation, this.treeToRelation);
             // recalculate sizes/etc
             this.recalculate();
             if (this._rows && this._groupRowsBy) {
@@ -17573,7 +17827,7 @@ var DatatableComponent = /** @class */ (function () {
          * Returns if all rows are selected.
          */
         get: function () {
-            var allRowsSelected = (this.selected.length === this.rows.length);
+            var allRowsSelected = (this.rows && this.selected && this.selected.length === this.rows.length);
             if (this.selectAllRowsOnPage) {
                 var indexes = this.bodyComponent.indexes;
                 var rowsOnPage = indexes.last - indexes.first;
@@ -17602,10 +17856,13 @@ var DatatableComponent = /** @class */ (function () {
     DatatableComponent.prototype.ngAfterViewInit = function () {
         var _this = this;
         if (!this.externalSorting) {
-            this._internalRows = utils_1.sortRows(this._rows, this._internalColumns, this.sorts);
+            this._internalRows = utils_1.sortRows(this._internalRows, this._internalColumns, this.sorts);
         }
         // this has to be done to prevent the change detection
         // tree from freaking out because we are readjusting
+        if (typeof requestAnimationFrame === 'undefined') {
+            return;
+        }
         requestAnimationFrame(function () {
             _this.recalculate();
             // emit page for virtual server-side kickoff
@@ -17675,11 +17932,13 @@ var DatatableComponent = /** @class */ (function () {
     DatatableComponent.prototype.ngDoCheck = function () {
         if (this.rowDiffer.diff(this.rows)) {
             if (!this.externalSorting) {
-                this._internalRows = utils_1.sortRows(this._rows, this._internalColumns, this.sorts);
+                this._internalRows = utils_1.sortRows(this._internalRows, this._internalColumns, this.sorts);
             }
             else {
                 this._internalRows = this.rows.slice();
             }
+            // auto group by parent on new update
+            this._internalRows = utils_1.groupRowsByParents(this._internalRows, this.treeFromRelation, this.treeToRelation);
             this.recalculatePages();
             this.cd.markForCheck();
         }
@@ -17733,7 +17992,7 @@ var DatatableComponent = /** @class */ (function () {
      *
      */
     DatatableComponent.prototype.recalculateDims = function () {
-        var dims = this.element.getBoundingClientRect();
+        var dims = this.dimensionsHelper.getDimensions(this.element);
         this._innerWidth = Math.floor(dims.width);
         if (this.scrollbarV) {
             var height = dims.height;
@@ -17908,8 +18167,10 @@ var DatatableComponent = /** @class */ (function () {
         // the rows again on the 'push' detection...
         if (this.externalSorting === false) {
             // don't use normal setter so we don't resort
-            this._internalRows = utils_1.sortRows(this.rows, this._internalColumns, sorts);
+            this._internalRows = utils_1.sortRows(this._internalRows, this._internalColumns, sorts);
         }
+        // auto group by parent on new update
+        this._internalRows = utils_1.groupRowsByParents(this._internalRows, this.treeFromRelation, this.treeToRelation);
         this.sorts = sorts;
         // Always go to first page when sorting to see the newly sorted data
         this.offset = 0;
@@ -17952,6 +18213,18 @@ var DatatableComponent = /** @class */ (function () {
      */
     DatatableComponent.prototype.onBodySelect = function (event) {
         this.select.emit(event);
+    };
+    /**
+     * A row was expanded ot collapsed for tree
+     */
+    DatatableComponent.prototype.onTreeAction = function (event) {
+        var _this = this;
+        var row = event.row;
+        // TODO: For duplicated items this will not work
+        var rowIndex = this._rows.findIndex(function (r) {
+            return r[_this.treeToRelation] === event.row[_this.treeToRelation];
+        });
+        this.treeAction.emit({ row: row, rowIndex: rowIndex });
     };
     __decorate([
         core_1.Input(),
@@ -18080,6 +18353,18 @@ var DatatableComponent = /** @class */ (function () {
         __metadata("design:type", Object)
     ], DatatableComponent.prototype, "selectAllRowsOnPage", void 0);
     __decorate([
+        core_1.Input(),
+        __metadata("design:type", Boolean)
+    ], DatatableComponent.prototype, "virtualization", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", String)
+    ], DatatableComponent.prototype, "treeFromRelation", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", String)
+    ], DatatableComponent.prototype, "treeToRelation", void 0);
+    __decorate([
         core_1.Output(),
         __metadata("design:type", core_1.EventEmitter)
     ], DatatableComponent.prototype, "scroll", void 0);
@@ -18111,6 +18396,10 @@ var DatatableComponent = /** @class */ (function () {
         core_1.Output(),
         __metadata("design:type", Object)
     ], DatatableComponent.prototype, "tableContextmenu", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", core_1.EventEmitter)
+    ], DatatableComponent.prototype, "treeAction", void 0);
     __decorate([
         core_1.HostBinding('class.fixed-header'),
         __metadata("design:type", Boolean),
@@ -18196,7 +18485,7 @@ var DatatableComponent = /** @class */ (function () {
     DatatableComponent = __decorate([
         core_1.Component({
             selector: 'ngx-datatable',
-            template: "\n    <div\n      visibilityObserver\n      (visible)=\"recalculate()\">\n      <datatable-header\n        *ngIf=\"headerHeight\"\n        [sorts]=\"sorts\"\n        [sortType]=\"sortType\"\n        [scrollbarH]=\"scrollbarH\"\n        [innerWidth]=\"_innerWidth\"\n        [offsetX]=\"_offsetX | async\"\n        [dealsWithGroup]=\"groupedRows\"\n        [columns]=\"_internalColumns\"\n        [headerHeight]=\"headerHeight\"\n        [reorderable]=\"reorderable\"\n        [sortAscendingIcon]=\"cssClasses.sortAscending\"\n        [sortDescendingIcon]=\"cssClasses.sortDescending\"\n        [allRowsSelected]=\"allRowsSelected\"\n        [selectionType]=\"selectionType\"\n        (sort)=\"onColumnSort($event)\"\n        (resize)=\"onColumnResize($event)\"\n        (reorder)=\"onColumnReorder($event)\"\n        (select)=\"onHeaderSelect($event)\"\n        (columnContextmenu)=\"onColumnContextmenu($event)\">\n      </datatable-header>\n      <datatable-body\n        [groupRowsBy]=\"groupRowsBy\"\n        [groupedRows]=\"groupedRows\"\n        [rows]=\"_internalRows\"\n        [groupExpansionDefault]=\"groupExpansionDefault\"\n        [scrollbarV]=\"scrollbarV\"\n        [scrollbarH]=\"scrollbarH\"\n        [loadingIndicator]=\"loadingIndicator\"\n        [externalPaging]=\"externalPaging\"\n        [rowHeight]=\"rowHeight\"\n        [rowCount]=\"rowCount\"\n        [offset]=\"offset\"\n        [trackByProp]=\"trackByProp\"\n        [columns]=\"_internalColumns\"\n        [pageSize]=\"pageSize\"\n        [offsetX]=\"_offsetX | async\"\n        [rowDetail]=\"rowDetail\"\n        [groupHeader]=\"groupHeader\"\n        [selected]=\"selected\"\n        [innerWidth]=\"_innerWidth\"\n        [bodyHeight]=\"bodyHeight\"\n        [selectionType]=\"selectionType\"\n        [emptyMessage]=\"messages.emptyMessage\"\n        [rowIdentity]=\"rowIdentity\"\n        [rowClass]=\"rowClass\"\n        [selectCheck]=\"selectCheck\"\n        [displayCheck]=\"displayCheck\"\n        (page)=\"onBodyPage($event)\"\n        (activate)=\"activate.emit($event)\"\n        (rowContextmenu)=\"onRowContextmenu($event)\"\n        (select)=\"onBodySelect($event)\"\n        (scroll)=\"onBodyScroll($event)\">\n      </datatable-body>\n      <datatable-footer\n        *ngIf=\"footerHeight\"\n        [rowCount]=\"rowCount\"\n        [pageSize]=\"pageSize\"\n        [offset]=\"offset\"\n        [footerHeight]=\"footerHeight\"\n        [footerTemplate]=\"footer\"\n        [totalMessage]=\"messages.totalMessage\"\n        [pagerLeftArrowIcon]=\"cssClasses.pagerLeftArrow\"\n        [pagerRightArrowIcon]=\"cssClasses.pagerRightArrow\"\n        [pagerPreviousIcon]=\"cssClasses.pagerPrevious\"\n        [selectedCount]=\"selected.length\"\n        [selectedMessage]=\"!!selectionType && messages.selectedMessage\"\n        [pagerNextIcon]=\"cssClasses.pagerNext\"\n        (page)=\"onFooterPage($event)\">\n      </datatable-footer>\n    </div>\n  ",
+            template: "\n    <div\n      visibilityObserver\n      (visible)=\"recalculate()\"\n      style=\"transform-style: preserve-3d;\">\n      <datatable-header\n        *ngIf=\"headerHeight\"\n        [sorts]=\"sorts\"\n        [sortType]=\"sortType\"\n        [scrollbarH]=\"scrollbarH\"\n        [innerWidth]=\"_innerWidth\"\n        [offsetX]=\"_offsetX | async\"\n        [dealsWithGroup]=\"groupedRows\"\n        [columns]=\"_internalColumns\"\n        [headerHeight]=\"headerHeight\"\n        [reorderable]=\"reorderable\"\n        [sortAscendingIcon]=\"cssClasses.sortAscending\"\n        [sortDescendingIcon]=\"cssClasses.sortDescending\"\n        [allRowsSelected]=\"allRowsSelected\"\n        [selectionType]=\"selectionType\"\n        (sort)=\"onColumnSort($event)\"\n        (resize)=\"onColumnResize($event)\"\n        (reorder)=\"onColumnReorder($event)\"\n        (select)=\"onHeaderSelect($event)\"\n        (columnContextmenu)=\"onColumnContextmenu($event)\">\n      </datatable-header>\n      <datatable-body\n        [groupRowsBy]=\"groupRowsBy\"\n        [groupedRows]=\"groupedRows\"\n        [rows]=\"_internalRows\"\n        [groupExpansionDefault]=\"groupExpansionDefault\"\n        [scrollbarV]=\"scrollbarV\"\n        [scrollbarH]=\"scrollbarH\"\n        [virtualization]=\"virtualization\"\n        [loadingIndicator]=\"loadingIndicator\"\n        [externalPaging]=\"externalPaging\"\n        [rowHeight]=\"rowHeight\"\n        [rowCount]=\"rowCount\"\n        [offset]=\"offset\"\n        [trackByProp]=\"trackByProp\"\n        [columns]=\"_internalColumns\"\n        [pageSize]=\"pageSize\"\n        [offsetX]=\"_offsetX | async\"\n        [rowDetail]=\"rowDetail\"\n        [groupHeader]=\"groupHeader\"\n        [selected]=\"selected\"\n        [innerWidth]=\"_innerWidth\"\n        [bodyHeight]=\"bodyHeight\"\n        [selectionType]=\"selectionType\"\n        [emptyMessage]=\"messages.emptyMessage\"\n        [rowIdentity]=\"rowIdentity\"\n        [rowClass]=\"rowClass\"\n        [selectCheck]=\"selectCheck\"\n        [displayCheck]=\"displayCheck\"\n        (page)=\"onBodyPage($event)\"\n        (activate)=\"activate.emit($event)\"\n        (rowContextmenu)=\"onRowContextmenu($event)\"\n        (select)=\"onBodySelect($event)\"\n        (scroll)=\"onBodyScroll($event)\"\n        (treeAction)=\"onTreeAction($event)\">\n      </datatable-body>\n      <datatable-footer\n        *ngIf=\"footerHeight\"\n        [rowCount]=\"rowCount\"\n        [pageSize]=\"pageSize\"\n        [offset]=\"offset\"\n        [footerHeight]=\"footerHeight\"\n        [footerTemplate]=\"footer\"\n        [totalMessage]=\"messages.totalMessage\"\n        [pagerLeftArrowIcon]=\"cssClasses.pagerLeftArrow\"\n        [pagerRightArrowIcon]=\"cssClasses.pagerRightArrow\"\n        [pagerPreviousIcon]=\"cssClasses.pagerPrevious\"\n        [selectedCount]=\"selected.length\"\n        [selectedMessage]=\"!!selectionType && messages.selectedMessage\"\n        [pagerNextIcon]=\"cssClasses.pagerNext\"\n        (page)=\"onFooterPage($event)\">\n      </datatable-footer>\n    </div>\n  ",
             changeDetection: core_1.ChangeDetectionStrategy.OnPush,
             encapsulation: core_1.ViewEncapsulation.None,
             styles: [__webpack_require__("./src/components/datatable.component.scss")],
@@ -18204,7 +18493,10 @@ var DatatableComponent = /** @class */ (function () {
                 class: 'ngx-datatable'
             }
         }),
+        __param(0, core_1.SkipSelf()),
+        __param(1, core_1.SkipSelf()),
         __metadata("design:paramtypes", [services_1.ScrollbarHelper,
+            services_1.DimensionsHelper,
             core_1.ChangeDetectorRef,
             core_1.ElementRef,
             core_1.KeyValueDiffers])
@@ -19065,12 +19357,12 @@ var DataTableHeaderComponent = /** @class */ (function () {
             width: widths[group] + "px"
         };
         if (group === 'center') {
-            utils_1.translateXY(styles, offsetX * -1, 0);
+            utils_1.translateXY(styles, offsetX * -1, 0, 10);
         }
         else if (group === 'right') {
             var totalDiff = widths.total - this.innerWidth;
             var offset = totalDiff * -1;
-            utils_1.translateXY(styles, offset, 0);
+            utils_1.translateXY(styles, offset, 0, 10);
         }
         return styles;
     };
@@ -19362,7 +19654,8 @@ var NgxDatatableModule = /** @class */ (function () {
                 common_1.CommonModule
             ],
             providers: [
-                services_1.ScrollbarHelper
+                services_1.ScrollbarHelper,
+                services_1.DimensionsHelper
             ],
             declarations: [
                 components_1.DataTableFooterTemplateDirective,
@@ -19389,6 +19682,10 @@ var NgxDatatableModule = /** @class */ (function () {
                 components_1.DataTableSelectionComponent,
                 components_1.DataTableColumnHeaderDirective,
                 components_1.DataTableColumnCellDirective,
+                components_1.DataTableColumnCellTreeExpander,
+                components_1.DataTableColumnCellTreeCollapser,
+                components_1.DataTableColumnCellTreeLoader,
+                components_1.DataTableColumnCellTreeDisable,
                 components_1.DatatableFooterDirective,
                 components_1.DatatableGroupHeaderTemplateDirective
             ],
@@ -19400,6 +19697,10 @@ var NgxDatatableModule = /** @class */ (function () {
                 components_1.DataTableColumnDirective,
                 components_1.DataTableColumnHeaderDirective,
                 components_1.DataTableColumnCellDirective,
+                components_1.DataTableColumnCellTreeExpander,
+                components_1.DataTableColumnCellTreeCollapser,
+                components_1.DataTableColumnCellTreeLoader,
+                components_1.DataTableColumnCellTreeDisable,
                 components_1.DataTableFooterTemplateDirective,
                 components_1.DatatableFooterDirective,
                 components_1.DataTablePagerComponent,
@@ -19431,7 +19732,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("@angular/core");
 var Observable_1 = __webpack_require__("./node_modules/rxjs/Observable.js");
-var operators_1 = __webpack_require__("./node_modules/rxjs/operators/index.js");
+var operators_1 = __webpack_require__("./node_modules/rxjs/operators.js");
 /**
  * Draggable Directive for Angular2
  *
@@ -19590,7 +19891,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("@angular/core");
 var Observable_1 = __webpack_require__("./node_modules/rxjs/Observable.js");
-var operators_1 = __webpack_require__("./node_modules/rxjs/operators/index.js");
+var operators_1 = __webpack_require__("./node_modules/rxjs/operators.js");
 var events_1 = __webpack_require__("./src/events.ts");
 var LongPressDirective = /** @class */ (function () {
     function LongPressDirective() {
@@ -19893,19 +20194,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("@angular/core");
 var Observable_1 = __webpack_require__("./node_modules/rxjs/Observable.js");
 var events_1 = __webpack_require__("./src/events.ts");
-var operators_1 = __webpack_require__("./node_modules/rxjs/operators/index.js");
+var operators_1 = __webpack_require__("./node_modules/rxjs/operators.js");
 var ResizeableDirective = /** @class */ (function () {
-    function ResizeableDirective(element) {
+    function ResizeableDirective(element, renderer) {
+        this.renderer = renderer;
         this.resizeEnabled = true;
         this.resize = new core_1.EventEmitter();
         this.resizing = false;
         this.element = element.nativeElement;
     }
     ResizeableDirective.prototype.ngAfterViewInit = function () {
+        var renderer2 = this.renderer;
         if (this.resizeEnabled) {
-            var node = document.createElement('span');
-            node.classList.add('resize-handle');
-            this.element.appendChild(node);
+            var node = renderer2.createElement('span');
+            renderer2.addClass(node, 'resize-handle');
+            renderer2.appendChild(this.element, node);
         }
     };
     ResizeableDirective.prototype.ngOnDestroy = function () {
@@ -19979,7 +20282,7 @@ var ResizeableDirective = /** @class */ (function () {
                 '[class.resizeable]': 'resizeEnabled'
             }
         }),
-        __metadata("design:paramtypes", [core_1.ElementRef])
+        __metadata("design:paramtypes", [core_1.ElementRef, core_1.Renderer2])
     ], ResizeableDirective);
     return ResizeableDirective;
 }());
@@ -20082,6 +20385,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable:variable-name */
 exports.MouseEvent = global.MouseEvent;
 exports.KeyboardEvent = global.KeyboardEvent;
+exports.Event = global.Event;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("./node_modules/webpack/buildin/global.js")))
 
@@ -20099,6 +20403,40 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__("./src/datatable.module.ts"));
 __export(__webpack_require__("./src/types/index.ts"));
 __export(__webpack_require__("./src/components/index.ts"));
+__export(__webpack_require__("./src/services/index.ts"));
+
+
+/***/ }),
+
+/***/ "./src/services/dimensions-helper.service.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("@angular/core");
+/**
+ * Gets the width of the scrollbar.  Nesc for windows
+ * http://stackoverflow.com/a/13382873/888165
+ */
+var DimensionsHelper = /** @class */ (function () {
+    function DimensionsHelper() {
+    }
+    DimensionsHelper.prototype.getDimensions = function (element) {
+        return element.getBoundingClientRect();
+    };
+    DimensionsHelper = __decorate([
+        core_1.Injectable()
+    ], DimensionsHelper);
+    return DimensionsHelper;
+}());
+exports.DimensionsHelper = DimensionsHelper;
 
 
 /***/ }),
@@ -20113,6 +20451,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__("./src/services/scrollbar-helper.service.ts"));
+__export(__webpack_require__("./src/services/dimensions-helper.service.ts"));
 
 
 /***/ }),
@@ -20339,6 +20678,10 @@ var column_prop_getters_1 = __webpack_require__("./src/utils/column-prop-getters
 function setColumnDefaults(columns) {
     if (!columns)
         return;
+    // Only one column should hold the tree view
+    // Thus if multiple columns are provided with
+    // isTreeColumn as true we take only the first one
+    var treeColumnFound = false;
     for (var _i = 0, columns_1 = columns; _i < columns_1.length; _i++) {
         var column = columns_1[_i];
         if (!column.$$id) {
@@ -20373,6 +20716,21 @@ function setColumnDefaults(columns) {
         }
         if (!column.hasOwnProperty('width')) {
             column.width = 150;
+        }
+        if (!column.hasOwnProperty('isTreeColumn')) {
+            column.isTreeColumn = false;
+        }
+        else {
+            if (column.isTreeColumn && !treeColumnFound) {
+                // If the first column with isTreeColumn is true found
+                // we mark that treeCoulmn is found
+                treeColumnFound = true;
+            }
+            else {
+                // After that isTreeColumn property for any other column
+                // will be set as false
+                column.isTreeColumn = false;
+            }
         }
     }
 }
@@ -20698,6 +21056,7 @@ __export(__webpack_require__("./src/utils/sort.ts"));
 __export(__webpack_require__("./src/utils/row-height-cache.ts"));
 __export(__webpack_require__("./src/utils/column-helper.ts"));
 __export(__webpack_require__("./src/utils/elm-from-point.ts"));
+__export(__webpack_require__("./src/utils/tree.ts"));
 
 
 /***/ }),
@@ -21199,7 +21558,8 @@ function orderByComparator(a, b) {
 }
 exports.orderByComparator = orderByComparator;
 /**
- * Sorts the rows
+ * creates a shallow copy of the `rows` input and returns the sorted copy. this function
+ * does not sort the `rows` argument in place
  */
 function sortRows(rows, columns, dirs) {
     if (!rows)
@@ -21207,7 +21567,8 @@ function sortRows(rows, columns, dirs) {
     if (!dirs || !dirs.length || !columns)
         return rows.slice();
     /**
-     * create a mapping from each row to its row index prior to sorting
+     * record the row ordering of results from prior sort operations (if applicable)
+     * this is necessary to guarantee stable sorting behavior
      */
     var rowToIndexMap = new Map();
     rows.forEach(function (row, index) { return rowToIndexMap.set(row, index); });
@@ -21251,6 +21612,8 @@ function sortRows(rows, columns, dirs) {
             if (comparison !== 0)
                 return comparison;
         }
+        if (!(rowToIndexMap.has(rowA) && rowToIndexMap.has(rowB)))
+            return 0;
         /**
          * all else being equal, preserve original order of the rows (stable sort)
          */
@@ -21348,14 +21711,15 @@ var hasCSSTransforms = typeof window !== 'undefined' ? !!prefixes_1.getVendorPre
 var hasCSS3DTransforms = typeof window !== 'undefined' ? !!prefixes_1.getVendorPrefixedName('perspective') : undefined;
 var ua = typeof window !== 'undefined' ? window.navigator.userAgent : 'Chrome';
 var isSafari = (/Safari\//).test(ua) && !(/Chrome\//).test(ua);
-function translateXY(styles, x, y) {
+function translateXY(styles, x, y, z) {
+    if (z === void 0) { z = 0; }
     if (typeof transform !== 'undefined' && hasCSSTransforms) {
         if (!isSafari && hasCSS3DTransforms) {
-            styles[transform] = "translate3d(" + x + "px, " + y + "px, 0)";
+            styles[transform] = "translate3d(" + x + "px, " + y + "px, " + z + "px)";
             styles[backfaceVisibility] = 'hidden';
         }
         else {
-            styles[camel_case_1.camelCase(transform)] = "translate(" + x + "px, " + y + "px)";
+            styles[camel_case_1.camelCase(transform)] = "translate(" + x + "px, " + y + "px, " + z + "px)";
         }
     }
     else {
@@ -21364,6 +21728,107 @@ function translateXY(styles, x, y) {
     }
 }
 exports.translateXY = translateXY;
+
+
+/***/ }),
+
+/***/ "./src/utils/tree.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * This functions rearrange items by their parents
+ * Also sets the level value to each of the items
+ *
+ * Note: Expecting each item has a property called parentId
+ * Note: This algorithm will fail if a list has two or more items with same ID
+ * NOTE: This algorithm will fail if there is a deadlock of relationship
+ *
+ * For example,
+ *
+ * Input
+ *
+ * id -> parent
+ * 1  -> 0
+ * 2  -> 0
+ * 3  -> 1
+ * 4  -> 1
+ * 5  -> 2
+ * 7  -> 8
+ * 6  -> 3
+ *
+ *
+ * Output
+ * id -> level
+ * 1      -> 0
+ * --3    -> 1
+ * ----6  -> 2
+ * --4    -> 1
+ * 2      -> 0
+ * --5    -> 1
+ * 7     -> 8
+ *
+ * TODO: This is a bruteforce solution, need to find a better one
+ *
+ * @param rows
+ *
+ */
+function groupRowsByParents(rows, from, to) {
+    if (from === void 0) { from = ''; }
+    if (to === void 0) { to = ''; }
+    if (from !== '' && to !== '') {
+        var childrenMap_1 = {};
+        var _loop_1 = function (i) {
+            childrenMap_1[rows[i][to]] = {
+                children: rows.filter(function (row) { return row[from] === rows[i][to]; }),
+                checked: false
+            };
+        };
+        for (var i = 0; i < rows.length; i++) {
+            _loop_1(i);
+        }
+        var allRootItems = rows.filter(function (row) { return row[from] === null ||
+            typeof (row[from]) === 'undefined'; });
+        var opArray = rearrange(allRootItems, childrenMap_1, 0, true, to);
+        // Now add items to the list whose parent is not present
+        // Setting all of their levels as 0
+        // TODO: This gets added at the end, need to maintain the order
+        opArray = opArray.concat(rows.filter(function (row) {
+            return !childrenMap_1[row[to]].checked;
+        }).map(function (item) {
+            item.level = 0;
+            return item;
+        }));
+        return opArray;
+    }
+    else {
+        return rows;
+    }
+}
+exports.groupRowsByParents = groupRowsByParents;
+function rearrange(items, map, level, show, to) {
+    if (show === void 0) { show = true; }
+    if (to === void 0) { to = ''; }
+    if (!items.length)
+        return [];
+    var op = [];
+    items.forEach(function (item) {
+        map[item[to]].checked = true;
+        item.level = level;
+        if (show) {
+            op = op.concat([
+                item
+            ], rearrange(map[item[to]].children, map, level + 1, item.treeStatus === 'expanded', to));
+        }
+        else {
+            op = op.slice();
+            rearrange(map[item[to]].children, map, level + 1, false, to);
+        }
+    });
+    return op;
+}
 
 
 /***/ }),
